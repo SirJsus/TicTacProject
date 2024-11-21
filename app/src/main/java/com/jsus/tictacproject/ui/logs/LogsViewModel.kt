@@ -1,13 +1,13 @@
-package com.jsus.tictacproject.ui.home
+package com.jsus.tictacproject.ui.logs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class HomeViewModel : ViewModel() {
+class LogsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+        value = "This is Logs Fragment"
     }
     val text: LiveData<String> = _text
 

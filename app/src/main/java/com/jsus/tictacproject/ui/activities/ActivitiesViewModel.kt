@@ -1,13 +1,14 @@
-package com.jsus.tictacproject.ui.dashboard
+package com.jsus.tictacproject.ui.activities
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class ActivitiesViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "This is Activities Fragment"
     }
     val text: LiveData<String> = _text
+
 }
