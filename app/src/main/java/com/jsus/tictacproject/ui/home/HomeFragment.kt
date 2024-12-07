@@ -1,8 +1,6 @@
 package com.jsus.tictacproject.ui.home
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +8,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.jsus.tictacproject.code.objects.IntervalTimer
-import com.jsus.tictacproject.code.objects.TimerItem
+import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.TextConfig
 import com.jsus.tictacproject.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -39,14 +37,30 @@ class HomeFragment : Fragment() {
         }
 
         with(binding){
-            val itemList = List(10) {TimerItem(id = it, name = "Item: $it")}
+            val itemList = mutableListOf<Activity>()
+            addButton.setOnClickListener {
+                val name = TextConfig(requireContext()).getInfo(nameTIET, nameTIL, 1)
+                val desc = TextConfig(requireContext()).getInfo(descTIET, descTIL, 2)
 
-            val adapter = TimerAdapter(itemList)
-            rvTimer.layoutManager = LinearLayoutManager(requireContext())
-            rvTimer.adapter = adapter
+                if (name != null){
+                    val new = Activity(itemList.size, name, desc)
+                    itemList.add(new)
+                }
+                reciclerView(itemList)
+            }
+
+
         }
 
         return root
+    }
+
+    fun reciclerView(itemList: List<Activity>){
+        with(binding){
+            val adapter = TimerAdapter(itemList)
+            timerRv.layoutManager = LinearLayoutManager(requireContext())
+            timerRv.adapter = adapter
+        }
     }
 
     override fun onDestroyView() {
