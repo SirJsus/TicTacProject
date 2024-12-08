@@ -2,10 +2,13 @@ package com.jsus.tictacproject.code.db
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.Register
+import java.time.LocalDateTime
 
 class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object{
@@ -13,9 +16,9 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         private const val DATABASE_VERSION = 1
 
         private const val TABLE_NAME_ACTIVITY = "actividad"
-        private const val id_ac = "project_id"
-        private const val name_ac = "name_pj"
-        private const val desc_ac = "description_pj"
+        private const val id_ac = "activity_id"
+        private const val name_ac = "name_ac"
+        private const val desc_ac = "description_ac"
 
         private const val CREATE_ACTIVITY_TABLE =
             "CREATE TABLE $TABLE_NAME_ACTIVITY (" +
@@ -23,6 +26,23 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                     "$name_ac TEXT NOT NULL," +
                     "$desc_ac TEXT," +
                     "PRIMARY KEY ($id_ac)" +
+                    ");"
+
+        private const val TABLE_NAME_REGISTER = "registro"
+        private const val id_rg = "register_id"
+        private const val desc_rg = "desc_rg"
+        private const val start_rg = "star_rg"
+        private const val end_rg = "end_rg"
+
+        private const val CREATE_REGISTER_TABLE =
+            "CREATE TABLE $TABLE_NAME_REGISTER (" +
+                    "$id_rg INTEGER NOT NULL," +
+                    "$id_ac INTEGER NOT NULL," +
+                    "$desc_rg TEXT," +
+                    "$start_rg TEXT," +
+                    "$end_rg TEXT," +
+                    "PRIMARY KEY ($id_rg, $id_ac)," +
+                    "FOREIGN KEY ($id_ac) REFERENCES $TABLE_NAME_ACTIVITY($id_ac)" +
                     ");"
     }
 
@@ -34,18 +54,39 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(desc_ac, data.description)
         }
         val result = insertOnTable(TABLE_NAME_ACTIVITY, null, values)
-        Log.d("tictac_DBHelper", "insertActivity: $result")
+        Log.d("tictac_DBHelper", "insertActivity: $data")
+    }
+
+    private fun getActivity(cursor: Cursor): Activity {
+        val data: Activity = if (cursor.moveToFirst()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val name    = cursor.getString (cursor.getColumnIndex(name_ac).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_ac).toInt())
+            Activity(id, name, desc)
+        } else Activity()
+        cursor.close()
+        return data
     }
 
     fun getActivityCount(): Int{
-        val cursor = readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME_ACTIVITY", null)
-        Log.d("tictac_DBHelper", "getActivityCount cursor: $cursor")
+        val query = "SELECT COUNT(*) FROM $TABLE_NAME_ACTIVITY"
+        Log.d("tictac_DBHelper", "getActivityCount query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
         val count = if (cursor.moveToFirst()){
             cursor.getInt(0)
         } else 0
         Log.d("tictac_DBHelper", "getActivityCount count: $count")
         cursor.close()
         return count
+    }
+
+    fun getActivityByID(id: Int): Activity{
+        val query = "SELECT * FROM $TABLE_NAME_ACTIVITY WHERE $id_ac = $id"
+        Log.d("tictac_DBHelper", "getActivityByID query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
+        val result = getActivity(cursor)
+        Log.d("tictac_DBHelper", "getActivityByID result: $result")
+        return result
     }
 
     fun getActivityList(): MutableList<Activity>{
@@ -61,6 +102,69 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             dataList.add(Activity(id, name, desc))
         }
         cursor.close()
+        Log.d("tictac_DBHelper", "getActivityList dataList: $dataList")
+        return dataList
+    }
+
+    fun insertRegister(data: Register) {
+        val values = ContentValues()
+        with(values){
+            put(id_rg, data.id)
+            put(id_ac, data.activity.id)
+            put(desc_rg, data.description)
+            put(start_rg, data.start.toString())
+            put(end_rg, data.end.toString())
+        }
+        val result = insertOnTable(TABLE_NAME_REGISTER, null, values)
+        Log.d("tictac_DBHelper", "insertRegister: $data")
+    }
+
+    private fun getRegister(cursor: Cursor): Register {
+        val data: Register = if (cursor.moveToFirst()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_rg).toInt())
+            val id_ac    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_rg).toInt())
+            val start    = cursor.getString (cursor.getColumnIndex(start_rg).toInt())
+            val end    = cursor.getString (cursor.getColumnIndex(end_rg).toInt())
+
+            val activity = getActivityByID(id_ac)
+            if (activity == Activity()) return Register()
+            Register(id, desc, activity, LocalDateTime.parse(start), LocalDateTime.parse(end))
+        } else Register()
+        cursor.close()
+        return data
+    }
+
+    fun getRegisterByID(id: Int, activity: Activity): Register{
+        val query = "SELECT * FROM $TABLE_NAME_REGISTER WHERE $id_rg = $id AND $id_ac = ${activity.id}"
+        Log.d("tictac_DBHelper", "getActivityByID query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
+        val result = getRegister(cursor)
+        Log.d("tictac_DBHelper", "getActivityByID result: $result")
+        return result
+    }
+
+    fun getRegisterList(): MutableList<Register>{
+        val columns = arrayOf(id_rg, id_ac, desc_rg, start_rg, end_rg)
+        val cursor = readableDatabase.query(
+            TABLE_NAME_REGISTER, columns,
+            null, null, null, null, null)
+        val dataList = mutableListOf<Register>()
+        while (cursor.moveToNext()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_rg).toInt())
+            val id_ac    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_rg).toInt())
+            val start    = cursor.getString (cursor.getColumnIndex(start_rg).toInt())
+            val end    = cursor.getString (cursor.getColumnIndex(end_rg).toInt())
+
+            val activity = getActivityByID(id_ac)
+            val getRegister = if (activity == Activity()) Register()
+                            else Register(id, desc, activity,
+                                    LocalDateTime.parse(start), LocalDateTime.parse(end))
+            dataList.add(getRegister)
+        }
+        cursor.close()
+        Log.d("tictac_DBHelper", "getRegisterList: $dataList")
         return dataList
     }
 
@@ -79,6 +183,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(CREATE_ACTIVITY_TABLE)
+        db?.execSQL(CREATE_REGISTER_TABLE)
         /*
         db?.execSQL(CREATE_USER_TABLE)
         db?.execSQL(CREATE_PJ_US_TABLE)
@@ -94,6 +199,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ACTIVITY")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_REGISTER")
         /*
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USER")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PJ_US")

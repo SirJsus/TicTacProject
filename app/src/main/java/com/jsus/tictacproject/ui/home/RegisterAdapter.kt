@@ -1,6 +1,5 @@
 package com.jsus.tictacproject.ui.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.code.objects.TextFormat
 import com.jsus.tictacproject.databinding.ItemRegisterTimerBinding
-import java.time.LocalDateTime
 
 class RegisterAdapter(private val items: List<Register>
 ): RecyclerView.Adapter<RegisterAdapter.RegisterHolder>() {

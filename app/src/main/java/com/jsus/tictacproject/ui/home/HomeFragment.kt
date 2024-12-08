@@ -21,17 +21,17 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val listRegister = mutableListOf<Register>()
+    private var listRegister = mutableListOf<Register>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dbHelper = DBHelper(requireContext())
         val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val dbHelper = DBHelper(requireContext())
         val textView: TextView = binding.textHome
         homeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
@@ -40,7 +40,9 @@ class HomeFragment : Fragment() {
         with(binding){
 
             val itemList = Activity().getList(dbHelper)
-            recyclerViewTimers(itemList)
+            listRegister = dbHelper.getRegisterList()
+            recyclerViewRegister()
+            recyclerViewTimers(itemList, dbHelper)
 
             addButton.setOnClickListener {
                 val name = TextConfig(requireContext()).getInfo(nameTIET, nameTIL, 1)
@@ -54,16 +56,16 @@ class HomeFragment : Fragment() {
                     TextConfig(requireContext()).clearText(nameTIET)
                     TextConfig(requireContext()).clearText(descTIET)
                 }
-                recyclerViewTimers(itemList)
+                recyclerViewTimers(itemList, dbHelper)
             }
         }
         return root
     }
 
-    private fun recyclerViewTimers(itemList: List<Activity>){
+    private fun recyclerViewTimers(itemList: List<Activity>, db: DBHelper){
         with(binding){
             Log.d("tictac_HomeFragment", "recyclerViewTimers, itemList: $itemList")
-            val adapter = TimerAdapter(itemList){ newRegister ->
+            val adapter = TimerAdapter(itemList, db){ newRegister ->
                 Log.d("tictac_HomeFragment", "recyclerViewTimers, newRegister: $newRegister")
                 listRegister.add(newRegister)
                 recyclerViewRegister()

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
+import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
@@ -16,6 +17,7 @@ import java.time.LocalDateTime
 
 class TimerAdapter(
     private val items: List<Activity>,
+    val db: DBHelper,
     private val newRegister: (Register) -> Unit
 ): RecyclerView.Adapter<TimerAdapter.TimerViewHolder>()  {
 
@@ -99,7 +101,7 @@ class TimerAdapter(
         if (activity.timer.isRunning){
             val now = LocalDateTime.now()
             activity.timer.end(now)
-            val newReg = Register().create(now.nano, activity)
+            val newReg = Register().create(activity, db)
             //Log.d("tictac_TimerAdapter", "stopTimer, newReg: $newReg")
             newRegister(newReg)
             Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")

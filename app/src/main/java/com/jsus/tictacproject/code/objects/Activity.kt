@@ -1,6 +1,7 @@
 package com.jsus.tictacproject.code.objects
 
 import com.jsus.tictacproject.code.db.DBHelper
+import kotlin.random.Random
 
 
 class Activity(var id: Int,
@@ -14,7 +15,12 @@ class Activity(var id: Int,
     }
 
     fun create(name: String, desc: String?, db: DBHelper): Activity{
-        val newID: Int = db.getActivityCount()
+        var newID: Int
+        do {
+            newID = Random.nextInt()
+            val isFree = db.getActivityByID(newID)
+        } while (isFree == Activity())
+
         val newActivity = Activity(newID, name, desc)
         db.insertActivity(newActivity)
         return newActivity
