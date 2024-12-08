@@ -22,9 +22,9 @@ class RegisterAdapter(private val items: List<Register>
                 textName.text = register.activity.name
                 textIdActivity.text = register.activity.id.toString()
                 textIdRegister.text = register.id.toString()
-                val startTime = TextFormat.getTimeFormat(register.start)
+                val startTime = TextFormat.getLocalTime(register.start)
                 textStart.text = startTime
-                val endTime = TextFormat.getTimeFormat(register.end)
+                val endTime = TextFormat.getLocalTime(register.end)
                 textEnd.text = endTime
 
                 with(register){

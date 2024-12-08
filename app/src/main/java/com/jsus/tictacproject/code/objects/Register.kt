@@ -18,7 +18,7 @@ class Register( val id: Int,
     }
     override fun toString(): String {
         return "\nRegister ($id, $activity," +
-                "${TextFormat.getTimeFormat(start)}, " +
-                "${TextFormat.getTimeFormat(end)})"
+                "${TextFormat.getLocalTime(start)}, " +
+                "${TextFormat.getLocalTime(end)})"
     }
 }

@@ -1,26 +1,117 @@
 package com.jsus.tictacproject.code.db
 
-class DBHelper {
+import android.content.ContentValues
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.jsus.tictacproject.code.objects.Activity
+
+class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    companion object{
+        private const val DATABASE_NAME = "TicTacDatabase"
+        private const val DATABASE_VERSION = 1
+
+        private const val TABLE_NAME_ACTIVITY = "actividad"
+        private const val id_ac = "project_id"
+        private const val name_ac = "name_pj"
+        private const val desc_ac = "description_pj"
+
+        private const val CREATE_ACTIVITY_TABLE =
+            "CREATE TABLE $TABLE_NAME_ACTIVITY (" +
+                    "$id_ac INTEGER NOT NULL," +
+                    "$name_ac TEXT NOT NULL," +
+                    "$desc_ac TEXT," +
+                    "PRIMARY KEY ($id_ac)" +
+                    ");"
+    }
+
+    fun insertActivity(data: Activity) {
+        val values = ContentValues()
+        with(values){
+            put(id_ac, data.id)
+            put(name_ac, data.name)
+            put(desc_ac, data.description)
+        }
+        val result = insertOnTable(TABLE_NAME_ACTIVITY, null, values)
+        Log.d("tictac_DBHelper", "insertActivity: $result")
+    }
+
+    fun getActivityCount(): Int{
+        val cursor = readableDatabase.rawQuery("SELECT COUNT(*) FROM $TABLE_NAME_ACTIVITY", null)
+        Log.d("tictac_DBHelper", "getActivityCount cursor: $cursor")
+        val count = if (cursor.moveToFirst()){
+            cursor.getInt(0)
+        } else 0
+        Log.d("tictac_DBHelper", "getActivityCount count: $count")
+        cursor.close()
+        return count
+    }
+
+    fun getActivityList(): MutableList<Activity>{
+        val columns = arrayOf(id_ac, name_ac, desc_ac)
+        val cursor = readableDatabase.query(
+            TABLE_NAME_ACTIVITY, columns,
+            null, null, null, null, null)
+        val dataList = mutableListOf<Activity>()
+        while (cursor.moveToNext()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val name    = cursor.getString (cursor.getColumnIndex(name_ac).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_ac).toInt())
+            dataList.add(Activity(id, name, desc))
+        }
+        cursor.close()
+        return dataList
+    }
+
+    private fun insertOnTable (table: String, column: String?, values: ContentValues){
+        writableDatabase.insert(table, column, values)
+        writableDatabase.close()
+    }
+    private fun updateOnTable (table: String, values: ContentValues, clause: String, things: Array<String>){
+        writableDatabase.update(table, values, clause, things)
+        writableDatabase.close()
+    }
+
+    private fun deleteOnTable (tableName: String, whereClause: String, whereArgs: Array<String>){
+        writableDatabase.delete(tableName, whereClause, whereArgs)
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        db?.execSQL(CREATE_ACTIVITY_TABLE)
+        /*
+        db?.execSQL(CREATE_USER_TABLE)
+        db?.execSQL(CREATE_PJ_US_TABLE)
+        db?.execSQL(CREATE_MATRIX_TABLE)
+        db?.execSQL(CREATE_ELEMENT_TABLE)
+        db?.execSQL(CREATE_CRITERIA_TABLE)
+        db?.execSQL(CREATE_CR_ELE_TABLE)
+        db?.execSQL(CREATE_ALTERNATIVE_TABLE)
+        db?.execSQL(CREATE_ALT_ELE_TABLE)
+        db?.execSQL(CREATE_CONSISTECY_TABLE)
+         */
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ACTIVITY")
+        /*
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USER")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PJ_US")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_MATRIX")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ELEMENT")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CRITERIA")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CR_ELE")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALTERNATIVE")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALT_ELE")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CONSISTENCY")
+         */
+        onCreate(db)
+    }
 }
 
 /*
 class SEAHPDBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object{
-        private const val DATABASE_NAME = "SEAHP Database"
-        private const val DATABASE_VERSION = 2
-
-        private const val TABLE_NAME_PROJECT = "proyecto"
-        private const val project_id = "project_id"
-        private const val name_pj = "name_pj"
-        private const val description_pj = "description_pj"
-
-        private const val CREATE_PROJECT_TABLE =
-            "CREATE TABLE $TABLE_NAME_PROJECT (" +
-                    "$project_id INTEGER NOT NULL," +
-                    "$name_pj TEXT NOT NULL," +
-                    "$description_pj TEXT," +
-                    "PRIMARY KEY ($project_id)" +
-                    ");"
 
         private const val TABLE_NAME_USER = "usuario"
         private const val user_us = "user_us"
@@ -609,31 +700,8 @@ class SEAHPDBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, 
         )
     }
 
-    private fun insertOnTable (table: String, columnNull: String?, values: ContentValues){
-        writableDatabase.insert(table, columnNull, values)
-        writableDatabase.close()
-    }
-    private fun updateOnTable (table: String, values: ContentValues, clause: String, things: Array<String>){
-        writableDatabase.update(table, values, clause, things)
-        writableDatabase.close()
-    }
 
-    private fun deleteOnTable (tableName: String, whereClause: String, whereArgs: Array<String>){
-        writableDatabase.delete(tableName, whereClause, whereArgs)
-    }
 
-    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PROJECT")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USER")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PJ_US")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_MATRIX")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ELEMENT")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CRITERIA")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CR_ELE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALTERNATIVE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALT_ELE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CONSISTENCY")
-        onCreate(db)
-    }
+
 }
 */
