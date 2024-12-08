@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
+import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
@@ -16,6 +17,7 @@ import java.time.LocalDateTime
 
 class TimerAdapter(
     private val items: List<Activity>,
+    val db: DBHelper,
     private val newRegister: (Register) -> Unit
 ): RecyclerView.Adapter<TimerAdapter.TimerViewHolder>()  {
 
@@ -30,7 +32,9 @@ class TimerAdapter(
         fun render (activity: Activity, position: Int){
             with(binding){
                 toggleButtonItem.isChecked = activity.timer.isRunning
-                toggleButtonItem.text = "${activity.name}: ${activity.id}\n${formatTime(activity.timer.getElapsedTime())}"
+                toggleButtonItem.text = "${activity.name}"
+                toggleButtonItem.textOn = "${activity.name}"
+                toggleButtonItem.textOff = "${activity.name}"
 
                 toggleButtonItem.setOnCheckedChangeListener { _, isChecked ->
                     Log.d("tictac_TimerAdapter", "render, reset ============================")
@@ -70,8 +74,7 @@ class TimerAdapter(
     override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
         holder.toggleButton.setOnCheckedChangeListener(null)
         holder.toggleButton.isChecked = position == activeTimerPosition
-        holder.toggleButton.text = "${items[position].name}: ${items[position].id}\n" +
-                "${formatTime(items[position].timer.getElapsedTime())}"
+        holder.toggleButton.text = "${items[position].name}"
 
 
         holder.render(items[position], position)
@@ -87,8 +90,7 @@ class TimerAdapter(
         handler.post(object : Runnable {
             override fun run() {
                 if (activity.timer.isRunning) {
-                    holder.toggleButton.text = "${activity.name}: ${activity.id}\n" +
-                            "${formatTime(activity.timer.getElapsedTime())}"
+                    holder.toggleButton.text = "${activity.name}"
                     handler.postDelayed(this, 55)
                 }
             }
@@ -99,21 +101,13 @@ class TimerAdapter(
         if (activity.timer.isRunning){
             val now = LocalDateTime.now()
             activity.timer.end(now)
-            val newReg = Register().create(now.nano, activity)
+            val newReg = Register().create(activity, db)
             //Log.d("tictac_TimerAdapter", "stopTimer, newReg: $newReg")
             newRegister(newReg)
             Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")
             activity.timer.reset()
             //Log.d("tictac_TimerAdapter", "stopTimer, reset: $activity")
         }
-    }
-
-    private fun formatTime(milliseconds: Long): String {
-        val mill = (milliseconds / 10) % 100
-        val seconds = (milliseconds / 1000) % 60
-        val minutes = (milliseconds / (1000 * 60)) % 60
-        val hours = (milliseconds / (1000 * 60 * 60))
-        return String.format("%02d:%02d:%02d:%02d", hours, minutes, seconds, mill)
     }
 
 }

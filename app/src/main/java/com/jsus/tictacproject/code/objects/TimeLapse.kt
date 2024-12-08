@@ -49,12 +49,10 @@ class TimeLapse {
     }
 
     override fun toString(): String {
-        return "\nTimeLapse (${startTime?.let { TextFormat.getTimeFormat(it) }}, " +
-                "${start?.let { TextFormat.getTimeFormat(it) }}, " +
-                "${end?.let { TextFormat.getTimeFormat(it) }}, " +
+        return "\nTimeLapse (${startTime?.let { TextFormat.getLocalTime(it) }}, " +
+                "${start?.let { TextFormat.getLocalTime(it) }}, " +
+                "${end?.let { TextFormat.getLocalTime(it) }}, " +
                 "$interval)"
     }
-    /*override fun toString(): String {
-        return "\nTimeLapse ($startTime, $start, $end, $interval)"
-    }*/
+
 }

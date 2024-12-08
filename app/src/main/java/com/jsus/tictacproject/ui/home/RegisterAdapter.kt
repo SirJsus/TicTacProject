@@ -1,6 +1,5 @@
 package com.jsus.tictacproject.ui.home
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.code.objects.TextFormat
 import com.jsus.tictacproject.databinding.ItemRegisterTimerBinding
-import java.time.LocalDateTime
 
 class RegisterAdapter(private val items: List<Register>
 ): RecyclerView.Adapter<RegisterAdapter.RegisterHolder>() {
@@ -18,13 +16,12 @@ class RegisterAdapter(private val items: List<Register>
 
         fun render (register: Register){
             with(binding){
-                //Log.d("tictac_RegisterAdapter", "render, register: $register")
                 textName.text = register.activity.name
                 textIdActivity.text = register.activity.id.toString()
                 textIdRegister.text = register.id.toString()
-                val startTime = TextFormat.getTimeFormat(register.start)
+                val startTime = TextFormat.getLocalTime(register.start)
                 textStart.text = startTime
-                val endTime = TextFormat.getTimeFormat(register.end)
+                val endTime = TextFormat.getLocalTime(register.end)
                 textEnd.text = endTime
 
                 with(register){
