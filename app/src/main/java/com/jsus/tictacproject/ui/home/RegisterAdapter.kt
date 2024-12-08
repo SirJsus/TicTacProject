@@ -16,7 +16,6 @@ class RegisterAdapter(private val items: List<Register>
 
         fun render (register: Register){
             with(binding){
-                //Log.d("tictac_RegisterAdapter", "render, register: $register")
                 textName.text = register.activity.name
                 textIdActivity.text = register.activity.id.toString()
                 textIdRegister.text = register.id.toString()
