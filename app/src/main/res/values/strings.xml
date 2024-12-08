@@ -6,4 +6,9 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_logs">Logs</string>
     <string name="title_config">Configuration</string>
+
+    <string name="error">Error</string>
+    <string name="error_name">Error Name</string>
+    <string name="error_desc">Error Description</string>
+
 </resources>
