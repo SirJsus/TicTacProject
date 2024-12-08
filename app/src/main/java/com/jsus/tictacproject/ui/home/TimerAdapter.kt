@@ -2,6 +2,7 @@ package com.jsus.tictacproject.ui.home
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,13 @@ import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
 import java.time.LocalDateTime
 
 class TimerAdapter(
-    private val items: List<Activity>
+    private val items: List<Activity>,
+    private val newRegister: (Register) -> Unit
 ): RecyclerView.Adapter<TimerAdapter.TimerViewHolder>()  {
 
     private val handler = Handler(Looper.getMainLooper())
@@ -30,18 +33,23 @@ class TimerAdapter(
                 toggleButtonItem.text = "${activity.name}: ${activity.id}\n${formatTime(activity.timer.getElapsedTime())}"
 
                 toggleButtonItem.setOnCheckedChangeListener { _, isChecked ->
+                    Log.d("tictac_TimerAdapter", "render, reset ============================")
+                    Log.d("tictac_TimerAdapter", "render, isChecked: $isChecked")
+                    Log.d("tictac_TimerAdapter", "render, position: $position")
+                    Log.d("tictac_TimerAdapter", "render, activeTimerPosition: $activeTimerPosition")
 
                     if (isChecked) {
                         // Detener el cronómetro activo, si hay uno
                         activeTimerPosition?.let { prevPosition ->
                             if (prevPosition != position) {
                                 val prevTimerItem = items[prevPosition]
-                                prevTimerItem.timer.reset()
+                                stopTimer(prevTimerItem)
                                 notifyItemChanged(prevPosition) // Actualizar la UI del cronómetro anterior
                             }
                         }
                         // Iniciar el nuevo cronómetro
                         activeTimerPosition = position
+                        Log.d("tictac_TimerAdapter", "render, new activeTimerPosition: $activeTimerPosition")
                         startTimer(this@TimerViewHolder, activity)
                     } else {
                         // Detener el cronómetro actual
@@ -60,6 +68,12 @@ class TimerAdapter(
     }
 
     override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
+        holder.toggleButton.setOnCheckedChangeListener(null)
+        holder.toggleButton.isChecked = position == activeTimerPosition
+        holder.toggleButton.text = "${items[position].name}: ${items[position].id}\n" +
+                "${formatTime(items[position].timer.getElapsedTime())}"
+
+
         holder.render(items[position], position)
     }
 
@@ -68,11 +82,13 @@ class TimerAdapter(
     private fun startTimer(holder: TimerViewHolder, activity: Activity) {
         now = LocalDateTime.now()
         activity.timer.start(now)
+        Log.d("tictac_TimerAdapter", "startTimer, activity: $activity")
 
         handler.post(object : Runnable {
             override fun run() {
                 if (activity.timer.isRunning) {
-                    holder.toggleButton.text = "${activity.name}\n${formatTime(activity.timer.getElapsedTime())}"
+                    holder.toggleButton.text = "${activity.name}: ${activity.id}\n" +
+                            "${formatTime(activity.timer.getElapsedTime())}"
                     handler.postDelayed(this, 55)
                 }
             }
@@ -80,7 +96,16 @@ class TimerAdapter(
     }
 
     private fun stopTimer(activity: Activity) {
-        activity.timer.reset()
+        if (activity.timer.isRunning){
+            val now = LocalDateTime.now()
+            activity.timer.end(now)
+            val newReg = Register().create(now.nano, activity)
+            //Log.d("tictac_TimerAdapter", "stopTimer, newReg: $newReg")
+            newRegister(newReg)
+            Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")
+            activity.timer.reset()
+            //Log.d("tictac_TimerAdapter", "stopTimer, reset: $activity")
+        }
     }
 
     private fun formatTime(milliseconds: Long): String {

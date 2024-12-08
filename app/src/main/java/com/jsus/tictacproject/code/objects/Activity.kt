@@ -1,8 +1,13 @@
 package com.jsus.tictacproject.code.objects
 
 
-data class Activity(var id: Int,
+class Activity(var id: Int,
                     var name: String,
                     var description: String?,
-                    var timer: IntervalTimer = IntervalTimer()
-)
+                    var timer: TimeLapse = TimeLapse()
+){
+    constructor(): this (0, "", null)
+    override fun toString(): String {
+        return "\nActivity ($id, \"$name\", \"$description\", $timer)"
+    }
+}

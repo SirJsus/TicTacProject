@@ -3,9 +3,11 @@ package com.jsus.tictacproject.code.objects
 import java.time.LocalDateTime
 import java.time.Duration
 
-class IntervalTimer {
+class TimeLapse {
 
     private var startTime: LocalDateTime? = null
+    var start: LocalDateTime? = null
+    var end: LocalDateTime? = null
     private var interval: Long = 0
 
     val isRunning: Boolean
@@ -14,6 +16,14 @@ class IntervalTimer {
     fun start(now: LocalDateTime){
         if (startTime == null){
             startTime = now
+            start = now
+            end = null
+        }
+    }
+
+    fun end(now: LocalDateTime){
+        if (startTime != null){
+            end = now
         }
     }
 
@@ -37,4 +47,14 @@ class IntervalTimer {
             interval
         }
     }
+
+    override fun toString(): String {
+        return "\nTimeLapse (${startTime?.let { TextFormat.getTimeFormat(it) }}, " +
+                "${start?.let { TextFormat.getTimeFormat(it) }}, " +
+                "${end?.let { TextFormat.getTimeFormat(it) }}, " +
+                "$interval)"
+    }
+    /*override fun toString(): String {
+        return "\nTimeLapse ($startTime, $start, $end, $interval)"
+    }*/
 }
