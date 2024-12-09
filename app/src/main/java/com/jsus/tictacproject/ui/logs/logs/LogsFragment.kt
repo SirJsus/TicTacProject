@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.logs
+package com.jsus.tictacproject.ui.logs.logs
 
 import android.os.Bundle
 import android.view.LayoutInflater

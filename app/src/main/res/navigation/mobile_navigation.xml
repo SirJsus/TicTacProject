@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_home"
+    >
 
     <fragment
         android:id="@+id/navigation_home"
@@ -14,16 +15,44 @@
 
     <fragment
         android:id="@+id/navigation_activities"
-        android:name="com.jsus.tictacproject.ui.activities.ActivitiesFragment"
-        android:label="@string/title_activities"
+        android:name="com.jsus.tictacproject.ui.activities.activities.ActivitiesFragment"
+        android:label="@string/activity_activity"
         tools:layout="@layout/fragment_activities"
         />
 
     <fragment
-        android:id="@+id/navigation_logs"
-        android:name="com.jsus.tictacproject.ui.logs.LogsFragment"
+        android:id="@+id/navigation_activities_container"
+        android:name="com.jsus.tictacproject.ui.activities.container.ActivityContainerFragment"
+        android:label="@string/title_activities"
+        tools:layout="@layout/fragment_activity_container"
+        />
+
+    <fragment
+        android:id="@+id/navigation_task"
+        android:name="com.jsus.tictacproject.ui.activities.task.TaskFragment"
+        android:label="@string/activity_task"
+        tools:layout="@layout/fragment_task"
+        />
+
+    <fragment
+        android:id="@+id/navigation_logs_container"
+        android:name="com.jsus.tictacproject.ui.logs.container.LogContainerFragment"
         android:label="@string/title_logs"
+        tools:layout="@layout/fragment_log_container"
+        />
+
+    <fragment
+        android:id="@+id/navigation_logs"
+        android:name="com.jsus.tictacproject.ui.logs.logs.LogsFragment"
+        android:label="@string/logs_logs"
         tools:layout="@layout/fragment_logs"
+        />
+
+    <fragment
+        android:id="@+id/navigation_log_graph"
+        android:name="com.jsus.tictacproject.ui.logs.graph.GraphFragment"
+        android:label="@string/logs_graph"
+        tools:layout="@layout/fragment_log_graph"
         />
 
     <fragment

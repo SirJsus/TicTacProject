@@ -1,14 +1,13 @@
-package com.jsus.tictacproject.ui.activities
+package com.jsus.tictacproject.ui.activities.task
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class ActivitiesViewModel : ViewModel() {
+class TaskViewModel: ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is Activities Fragment"
+        value = "This is Task Fragment"
     }
     val text: LiveData<String> = _text
-
 }

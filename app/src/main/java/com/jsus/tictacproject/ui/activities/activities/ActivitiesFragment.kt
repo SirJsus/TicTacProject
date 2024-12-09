@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.activities
+package com.jsus.tictacproject.ui.activities.activities
 
 import android.os.Bundle
 import android.view.LayoutInflater
