@@ -10,9 +10,6 @@ class Activity(var id: Int,
                     var timer: TimeLapse = TimeLapse()
 ){
     constructor(): this (0, "", null)
-    override fun toString(): String {
-        return "\nActivity ($id, $name, $description, $timer)"
-    }
 
     fun create(name: String, desc: String?, db: DBHelper): Activity{
         var newID: Int
@@ -28,5 +25,28 @@ class Activity(var id: Int,
 
     fun getList(db: DBHelper): MutableList<Activity>{
         return db.getActivityList()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Activity) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (description != other.description) return false
+        if (timer != other.timer) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 29 * result + name.hashCode()
+        result = 29 * result + description.hashCode()
+        result = 29 * result + timer.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "\nActivity ($id, $name, $description, $timer)"
     }
 }

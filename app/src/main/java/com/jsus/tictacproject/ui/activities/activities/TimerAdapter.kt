@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.home
+package com.jsus.tictacproject.ui.activities.activities
 
 import android.os.Handler
 import android.os.Looper
@@ -17,11 +17,9 @@ import java.time.LocalDateTime
 
 class TimerAdapter(
     private val items: List<Activity>,
-    val db: DBHelper,
-    private val newRegister: (Register) -> Unit
+    private val db: DBHelper
 ): RecyclerView.Adapter<TimerAdapter.TimerViewHolder>()  {
 
-    private val handler = Handler(Looper.getMainLooper())
     private var activeTimerPosition: Int? = null
     private var now: LocalDateTime = LocalDateTime.now()
 
@@ -31,16 +29,20 @@ class TimerAdapter(
 
         fun render (activity: Activity, position: Int){
             with(binding){
-                toggleButtonItem.isChecked = activity.timer.isRunning
-                toggleButtonItem.text = "${activity.name}"
-                toggleButtonItem.textOn = "${activity.name}"
-                toggleButtonItem.textOff = "${activity.name}"
+                Log.d("tictac_TimerAdapter", "render, activity: $activity")
+                toggleButtonItem.isChecked = if (activity.timer.isRunning){
+                    activeTimerPosition = position
+                    true
+                } else false
+                toggleButtonItem.text = activity.name
+                toggleButtonItem.textOn = activity.name
+                toggleButtonItem.textOff = activity.name
 
                 toggleButtonItem.setOnCheckedChangeListener { _, isChecked ->
                     Log.d("tictac_TimerAdapter", "render, reset ============================")
                     Log.d("tictac_TimerAdapter", "render, isChecked: $isChecked")
-                    Log.d("tictac_TimerAdapter", "render, position: $position")
-                    Log.d("tictac_TimerAdapter", "render, activeTimerPosition: $activeTimerPosition")
+                    Log.d("tictac_TimerAdapter", "render, prevPosition: $activeTimerPosition")
+                    Log.d("tictac_TimerAdapter", "render, newPosition: $position")
 
                     if (isChecked) {
                         // Detener el cronómetro activo, si hay uno
@@ -54,7 +56,7 @@ class TimerAdapter(
                         // Iniciar el nuevo cronómetro
                         activeTimerPosition = position
                         Log.d("tictac_TimerAdapter", "render, new activeTimerPosition: $activeTimerPosition")
-                        startTimer(this@TimerViewHolder, activity)
+                        startTimer(activity)
                     } else {
                         // Detener el cronómetro actual
                         stopTimer(activity)
@@ -74,7 +76,7 @@ class TimerAdapter(
     override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
         holder.toggleButton.setOnCheckedChangeListener(null)
         holder.toggleButton.isChecked = position == activeTimerPosition
-        holder.toggleButton.text = "${items[position].name}"
+        holder.toggleButton.text = items[position].name
 
 
         holder.render(items[position], position)
@@ -82,19 +84,11 @@ class TimerAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    private fun startTimer(holder: TimerViewHolder, activity: Activity) {
+    private fun startTimer(activity: Activity) {
         now = LocalDateTime.now()
         activity.timer.start(now)
         Log.d("tictac_TimerAdapter", "startTimer, activity: $activity")
-
-        handler.post(object : Runnable {
-            override fun run() {
-                if (activity.timer.isRunning) {
-                    holder.toggleButton.text = "${activity.name}"
-                    handler.postDelayed(this, 55)
-                }
-            }
-        })
+        db.insertNow(activity)
     }
 
     private fun stopTimer(activity: Activity) {
@@ -102,11 +96,9 @@ class TimerAdapter(
             val now = LocalDateTime.now()
             activity.timer.end(now)
             val newReg = Register().create(activity, db)
-            //Log.d("tictac_TimerAdapter", "stopTimer, newReg: $newReg")
-            newRegister(newReg)
+            db.deleteNow(1, newReg.activity)
             Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")
             activity.timer.reset()
-            //Log.d("tictac_TimerAdapter", "stopTimer, reset: $activity")
         }
     }
 

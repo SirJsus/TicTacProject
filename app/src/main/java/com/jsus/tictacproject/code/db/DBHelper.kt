@@ -44,6 +44,19 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                     "PRIMARY KEY ($id_rg, $id_ac)," +
                     "FOREIGN KEY ($id_ac) REFERENCES $TABLE_NAME_ACTIVITY($id_ac)" +
                     ");"
+
+        private const val TABLE_NAME_NOW = "ahora"
+        private const val id_now = "now_id"
+        private const val start_now = "star_now"
+
+        private const val CREATE_NOW_TABLE =
+            "CREATE TABLE $TABLE_NAME_NOW (" +
+                    "$id_now INTEGER NOT NULL," +
+                    "$id_ac INTEGER NOT NULL," +
+                    "$start_now TEXT," +
+                    "PRIMARY KEY ($id_now)," +
+                    "FOREIGN KEY ($id_ac) REFERENCES $TABLE_NAME_ACTIVITY($id_ac)" +
+                    ");"
     }
 
     fun insertActivity(data: Activity) {
@@ -54,7 +67,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(desc_ac, data.description)
         }
         val result = insertOnTable(TABLE_NAME_ACTIVITY, null, values)
-        Log.d("tictac_DBHelper", "insertActivity: $data")
+        Log.d("tictac_DBHelper", "insertActivity: $data\n$result")
     }
 
     private fun getActivity(cursor: Cursor): Activity {
@@ -168,6 +181,55 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return dataList
     }
 
+    fun insertNow(data: Activity) {
+        val values = ContentValues()
+        with(values){
+            put(id_now, 1)
+            put(id_ac, data.id)
+            put(start_now, data.timer.start!!.toString())
+        }
+        val result = insertOnTable(TABLE_NAME_NOW, null, values)
+        Log.d("tictac_DBHelper", "insertNow: $result")
+    }
+
+    fun updateNow(data: Activity){
+        val values = ContentValues()
+        with(values){
+            put(id_now, 1)
+            put(id_ac, data.id)
+            put(start_now, data.timer.start!!.toString())
+        }
+        val result = updateOnTable(TABLE_NAME_NOW, values, "$id_now = ?", arrayOf("1"))
+        Log.d("tictac_DBHelper", "updateNow: $result")
+    }
+
+    fun deleteNow(id: Int, activity: Activity) {
+        Log.d("tictac_DBHelper", "deleteNow, id: $id,\nactivity $activity")
+        val whereClause = "$id_now = ?"
+        val whereArgs = arrayOf("$id")
+        deleteOnTable(TABLE_NAME_NOW, whereClause, whereArgs)
+    }
+
+    fun getNow(): Activity{
+        val query = "SELECT * FROM $TABLE_NAME_NOW WHERE $id_now = 1"
+        Log.d("tictac_DBHelper", "getNow query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
+
+        val data: Activity = if (cursor.moveToFirst()){
+            val id_ac    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val start    = cursor.getString (cursor.getColumnIndex(start_now).toInt())
+
+            val activity = getActivityByID(id_ac)
+            if (activity == Activity()) return Activity()
+            val now = Activity(activity.id, activity.name, activity.description)
+            now.timer.start = LocalDateTime.parse(start)
+            now
+        } else Activity()
+        cursor.close()
+        Log.d("tictac_DBHelper", "getNow result: $data")
+        return data
+    }
+
     private fun insertOnTable (table: String, column: String?, values: ContentValues){
         writableDatabase.insert(table, column, values)
         writableDatabase.close()
@@ -184,6 +246,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(CREATE_ACTIVITY_TABLE)
         db?.execSQL(CREATE_REGISTER_TABLE)
+        db?.execSQL(CREATE_NOW_TABLE)
         /*
         db?.execSQL(CREATE_USER_TABLE)
         db?.execSQL(CREATE_PJ_US_TABLE)
@@ -200,6 +263,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ACTIVITY")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_REGISTER")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_NOW")
         /*
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USER")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PJ_US")

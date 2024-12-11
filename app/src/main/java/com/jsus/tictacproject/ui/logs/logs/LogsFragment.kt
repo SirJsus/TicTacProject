@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jsus.tictacproject.code.db.DBHelper
+import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.FragmentLogsBinding
 
 class LogsFragment : Fragment() {
 
     private var _binding: FragmentLogsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -32,7 +32,26 @@ class LogsFragment : Fragment() {
         notificationsViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        set()
+
         return root
+    }
+
+    fun set(){
+        val dbHelper = DBHelper(requireContext())
+        val listRegister = dbHelper.getRegisterList().asReversed()
+        recyclerViewRegister(listRegister)
+    }
+
+    private fun recyclerViewRegister(list: List<Register>){
+        //
+        with(binding){
+            val adapter = RegisterAdapter(list)
+            registerRv.layoutManager = LinearLayoutManager(requireContext())
+            registerRv.adapter = adapter
+        }
+
     }
 
     override fun onDestroyView() {

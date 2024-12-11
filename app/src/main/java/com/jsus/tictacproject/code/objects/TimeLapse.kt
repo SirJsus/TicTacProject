@@ -5,54 +5,68 @@ import java.time.Duration
 
 class TimeLapse {
 
-    private var startTime: LocalDateTime? = null
     var start: LocalDateTime? = null
     var end: LocalDateTime? = null
     private var interval: Long = 0
 
     val isRunning: Boolean
-        get() = startTime != null
+        get() = start != null
 
     fun start(now: LocalDateTime){
-        if (startTime == null){
-            startTime = now
+        if (start == null){
             start = now
             end = null
         }
     }
 
     fun end(now: LocalDateTime){
-        if (startTime != null){
+        if (start != null){
             end = now
         }
     }
 
     fun pause(){
-        startTime?.let {
+        start?.let {
             interval += Duration.between(it, LocalDateTime.now()).toMillis()
-            startTime = null
+            start = null
         }
     }
 
     fun reset(){
-        startTime = null
+        start = null
         interval = 0
     }
 
     // Obtiene el tiempo acumulado, considerando el tiempo actual si está corriendo
     fun getElapsedTime(): Long {
-        return if (startTime != null) {
-            interval + Duration.between(startTime, LocalDateTime.now()).toMillis()
+        return if (start != null) {
+            interval + Duration.between(start, LocalDateTime.now()).toMillis()
         } else {
             interval
         }
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is TimeLapse) return false
+
+        if (start != other.start) return false
+        if (end != other.end) return false
+        if (interval != other.interval) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = start.hashCode()
+        result = 29 * result + end.hashCode()
+        result = 29 * result + interval.hashCode()
+        return result
+    }
+
     override fun toString(): String {
-        return "\nTimeLapse (${startTime?.let { TextFormat.getLocalTime(it) }}, " +
-                "${start?.let { TextFormat.getLocalTime(it) }}, " +
+        return "\nTimeLapse (${start?.let { TextFormat.getLocalTime(it) }}, " +
                 "${end?.let { TextFormat.getLocalTime(it) }}, " +
-                "$interval)"
+                "$interval, $isRunning)"
     }
 
 }

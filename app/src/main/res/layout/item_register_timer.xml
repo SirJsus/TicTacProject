@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:paddingBottom="16dp"
     >
 
     <LinearLayout
@@ -14,29 +15,31 @@
 
         <TextView
             android:id="@+id/text_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="2"
             android:text="Name"
-            android:textSize="16sp"
+            android:paddingEnd="8dp"
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="20dp"
+            android:autoSizeMinTextSize="15dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             />
 
         <TextView
-            android:id="@+id/text_id_activity"
-            android:layout_width="wrap_content"
+            android:id="@+id/text_duration"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="ID"
-            android:textSize="16sp"
-            />
+            android:layout_weight="1"
+            android:text="Duration"
 
-        <TextView
-            android:id="@+id/text_id_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="ID"
-            android:textSize="16sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="20dp"
+            android:autoSizeMinTextSize="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             />
 
     </LinearLayout>
@@ -48,30 +51,45 @@
         >
 
         <TextView
-            android:id="@+id/text_start"
-            android:layout_width="wrap_content"
+            android:id="@+id/text_date"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="2"
+            android:text="Date"
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="20dp"
+            android:autoSizeMinTextSize="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            />
+
+        <TextView
+            android:id="@+id/text_start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="00:00:00"
-            android:textSize="16sp"
+
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="20dp"
+            android:autoSizeMinTextSize="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             />
 
         <TextView
             android:id="@+id/text_end"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_weight="1"
             android:text="00:00:00"
-            android:textSize="16sp"
-            />
 
-        <TextView
-            android:id="@+id/text_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Date"
-            android:textSize="16sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="20dp"
+            android:autoSizeMinTextSize="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             />
 
     </LinearLayout>
