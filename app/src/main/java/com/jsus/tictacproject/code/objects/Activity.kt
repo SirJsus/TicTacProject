@@ -12,7 +12,7 @@ class Activity(var id: Int,
                     var archived: Boolean = false,
                     var timer: TimeLapse = TimeLapse()
 ){
-    constructor(): this (0, "", null, false)
+    constructor(): this (0, "", null, true)
 
     fun create(name: String, desc: String?, db: DBHelper): Activity{
         var newID: Int

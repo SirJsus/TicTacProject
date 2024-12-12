@@ -41,8 +41,8 @@ class TextConfig(private val context: Context) {
     }
 
     fun isValid(string: String?, op: Int): Boolean{
-        val validName = Regex("[A-Za-z\\s]{1,50}")
-        val validDesc = Regex("[A-Za-z0-9\\s]{1,50}")
+        val validName = Regex("[A-Za-z0-9\\s]{1,50}")
+        val validDesc = Regex("[A-Za-z0-9\\s]{1,100}")
         val validUser = Regex("[A-Za-z0-9\\S]{4,25}")
         val validPass = Regex("^(?=(?:[^a-zA-Z]*[a-zA-Z]){3})" +
                 "(?=(?:[^\\p{Punct}]*\\p{Punct}){3})(?=(?:[^0-9]*[0-9]){3}).{9,32}$")

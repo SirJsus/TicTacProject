@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Register
+import com.jsus.tictacproject.code.objects.Task
 import java.time.LocalDateTime
 
 class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -58,6 +59,21 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
                     "$start_now TEXT," +
                     "PRIMARY KEY ($id_now)," +
                     "FOREIGN KEY ($id_ac) REFERENCES $TABLE_NAME_ACTIVITY($id_ac)" +
+                    ");"
+
+        private const val TABLE_NAME_TASK = "tareas"
+        private const val id_task = "now_task"
+        private const val name_task = "name_task"
+        private const val desc_task = "description_task"
+        private const val arch_task = "archived_task"
+
+        private const val CREATE_TASK_TABLE =
+            "CREATE TABLE $TABLE_NAME_TASK (" +
+                    "$id_task INTEGER NOT NULL," +
+                    "$name_task TEXT NOT NULL," +
+                    "$desc_task TEXT," +
+                    "$arch_task INTEGER NOT NULL," +
+                    "PRIMARY KEY ($id_task)" +
                     ");"
     }
 
@@ -237,6 +253,61 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return data
     }
 
+    fun insertTask(data: Task) {
+        val values = ContentValues()
+        with(values){
+            put(id_task, data.id)
+            put(name_task, data.name)
+            put(desc_task, data.desc)
+            val arch = if (data.arch) 1
+            else 0
+            put(arch_task, arch)
+        }
+        val result = insertOnTable(TABLE_NAME_TASK, null, values)
+        Log.d("tictac_DBHelper", "insertTask: $data\n$result")
+    }
+
+    private fun getTask(cursor: Cursor): Task {
+        val data: Task = if (cursor.moveToFirst()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_task).toInt())
+            val name    = cursor.getString (cursor.getColumnIndex(name_task).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_task).toInt())
+            val arch    = cursor.getInt (cursor.getColumnIndex(arch_task).toInt())
+            val getArch = (arch == 1)
+            Task(id, name, desc, getArch)
+        } else Task()
+        cursor.close()
+        return data
+    }
+
+    fun getTaskList(): MutableList<Task>{
+        val columns = arrayOf(id_task, name_task, desc_task, arch_task)
+        val cursor = readableDatabase.query(
+            TABLE_NAME_TASK, columns,
+            null, null, null, null, null)
+        val dataList = mutableListOf<Task>()
+        while (cursor.moveToNext()){
+            val id    = cursor.getInt (cursor.getColumnIndex(id_task).toInt())
+            val name    = cursor.getString (cursor.getColumnIndex(name_task).toInt())
+            val desc    = cursor.getString (cursor.getColumnIndex(desc_task).toInt())
+            val arch    = cursor.getInt (cursor.getColumnIndex(arch_task).toInt())
+            val getArch = (arch == 1)
+            dataList.add(Task(id, name, desc, getArch))
+        }
+        cursor.close()
+        Log.d("tictac_DBHelper", "getTaskList dataList: $dataList")
+        return dataList
+    }
+
+    fun getTaskByID(id: Int): Task{
+        val query = "SELECT * FROM $TABLE_NAME_TASK WHERE $id_task = $id"
+        Log.d("tictac_DBHelper", "getTaskByID query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
+        val result = getTask(cursor)
+        Log.d("tictac_DBHelper", "getTaskByID result: $result")
+        return result
+    }
+
     private fun insertOnTable (table: String, column: String?, values: ContentValues){
         writableDatabase.insert(table, column, values)
         writableDatabase.close()
@@ -254,34 +325,14 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         db?.execSQL(CREATE_ACTIVITY_TABLE)
         db?.execSQL(CREATE_REGISTER_TABLE)
         db?.execSQL(CREATE_NOW_TABLE)
-        /*
-        db?.execSQL(CREATE_USER_TABLE)
-        db?.execSQL(CREATE_PJ_US_TABLE)
-        db?.execSQL(CREATE_MATRIX_TABLE)
-        db?.execSQL(CREATE_ELEMENT_TABLE)
-        db?.execSQL(CREATE_CRITERIA_TABLE)
-        db?.execSQL(CREATE_CR_ELE_TABLE)
-        db?.execSQL(CREATE_ALTERNATIVE_TABLE)
-        db?.execSQL(CREATE_ALT_ELE_TABLE)
-        db?.execSQL(CREATE_CONSISTECY_TABLE)
-         */
+        db?.execSQL(CREATE_TASK_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ACTIVITY")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_REGISTER")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_NOW")
-        /*
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_USER")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_PJ_US")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_MATRIX")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ELEMENT")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CRITERIA")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CR_ELE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALTERNATIVE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_ALT_ELE")
-        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_CONSISTENCY")
-         */
+        db?.execSQL("DROP TABLE ITABLE_NAM$TABLE_NAME_TASK")
         onCreate(db)
     }
 }
