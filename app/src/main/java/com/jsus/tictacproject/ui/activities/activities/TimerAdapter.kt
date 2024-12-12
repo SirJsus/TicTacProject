@@ -1,7 +1,5 @@
 package com.jsus.tictacproject.ui.activities.activities
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
-import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
+import com.jsus.tictacproject.ui.home.ActivityChange
 import java.time.LocalDateTime
 
 class TimerAdapter(
     private val items: List<Activity>,
-    private val db: DBHelper
+    private val db: DBHelper,
+    private val listener: ActivityChange
 ): RecyclerView.Adapter<TimerAdapter.TimerViewHolder>()  {
 
     private var activeTimerPosition: Int? = null
@@ -63,6 +62,7 @@ class TimerAdapter(
                         activity.stopTimer(activity, now, db)
                         if (activeTimerPosition == position) activeTimerPosition = null
                     }
+                    listener.activityHasChange()
                 }
             }
         }
@@ -78,29 +78,9 @@ class TimerAdapter(
         holder.toggleButton.setOnCheckedChangeListener(null)
         holder.toggleButton.isChecked = position == activeTimerPosition
         holder.toggleButton.text = items[position].name
-
-
         holder.render(items[position], position)
     }
 
     override fun getItemCount(): Int = items.size
-
-    private fun startTimer(activity: Activity) {
-        now = LocalDateTime.now()
-        activity.timer.start(now)
-        Log.d("tictac_TimerAdapter", "startTimer, activity: $activity")
-        db.insertNow(activity)
-    }
-
-    private fun stopTimer(activity: Activity) {
-        if (activity.timer.isRunning){
-            val now = LocalDateTime.now()
-            activity.timer.end(now)
-            val newReg = Register().create(activity, db)
-            db.deleteNow(1, newReg.activity)
-            Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")
-            activity.timer.reset()
-        }
-    }
 
 }

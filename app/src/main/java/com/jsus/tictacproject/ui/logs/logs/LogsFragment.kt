@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jsus.tictacproject.code.db.DBHelper
+import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.databinding.FragmentLogsBinding
 
@@ -42,6 +43,10 @@ class LogsFragment : Fragment() {
         val dbHelper = DBHelper(requireContext())
         val listRegister = dbHelper.getRegisterList().asReversed()
         recyclerViewRegister(listRegister)
+        val now = dbHelper.getNow()
+        val list = if (now != Activity()) mutableListOf(now)
+                    else emptyList()
+        recyclerViewNow(list)
     }
 
     private fun recyclerViewRegister(list: List<Register>){
@@ -50,6 +55,15 @@ class LogsFragment : Fragment() {
             val adapter = RegisterAdapter(list)
             registerRv.layoutManager = LinearLayoutManager(requireContext())
             registerRv.adapter = adapter
+        }
+    }
+
+    private fun recyclerViewNow(list: List<Activity>){
+        //
+        with(binding){
+            val adapter = NowAdapter(list)
+            nowRv.layoutManager = LinearLayoutManager(requireContext())
+            nowRv.adapter = adapter
         }
     }
 

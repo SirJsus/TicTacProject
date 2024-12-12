@@ -9,11 +9,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.databinding.FragmentActivitiesBinding
+import com.jsus.tictacproject.ui.home.ActivityChange
+import com.jsus.tictacproject.ui.home.TimerOnAdapter
 
-class ActivitiesFragment : Fragment(), NewActivityAdd {
+class ActivitiesFragment : Fragment(), NewActivityAdd, ActivityChange {
 
     private var _binding: FragmentActivitiesBinding? = null
     private val binding get() = _binding!!
@@ -45,18 +48,29 @@ class ActivitiesFragment : Fragment(), NewActivityAdd {
         val dbHelper = DBHelper(requireContext())
         val itemList = Activity().getList(dbHelper)
         recyclerViewTimers(itemList, dbHelper)
-
+        val now = dbHelper.getNow()
+        val list = if (now != Activity()) mutableListOf(now)
+                    else emptyList()
+        recyclerViewNow(list, dbHelper)
     }
 
     private fun recyclerViewTimers(itemList: MutableList<Activity>, db: DBHelper){
+        val adapter = TimerAdapter(itemList, db, this)
         with(binding){
             Log.d("tictac_ActivitiesFragment", "recyclerViewTimers, itemList: $itemList")
             val now = db.getNow()
             Log.d("tictac_ActivitiesFragment", "recyclerViewTimers, now: $now")
             if (now != Activity()) itemList.find { it.id == now.id }!!.timer.start = now.timer.start
-            val adapter = TimerAdapter(itemList, db)
             timerRv.layoutManager = GridLayoutManager(requireContext(), 5)
             timerRv.adapter = adapter
+        }
+    }
+
+    private fun recyclerViewNow(list: List<Activity>, dbHelper: DBHelper){
+        val adapter = TimerOnAdapter(list, dbHelper, this)
+        with(binding){
+            timerOnRv.layoutManager = LinearLayoutManager(requireContext())
+            timerOnRv.adapter = adapter
         }
     }
 
@@ -74,5 +88,9 @@ class ActivitiesFragment : Fragment(), NewActivityAdd {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun activityHasChange() {
+        set()
     }
 }

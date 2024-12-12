@@ -39,13 +39,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/timer_on_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:listitem="@layout/item_timer_on"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/timer_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="9"
             tools:listitem="@layout/item_toggle_timer"
             />
 
