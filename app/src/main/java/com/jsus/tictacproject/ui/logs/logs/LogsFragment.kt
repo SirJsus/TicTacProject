@@ -51,7 +51,6 @@ class LogsFragment : Fragment() {
             registerRv.layoutManager = LinearLayoutManager(requireContext())
             registerRv.adapter = adapter
         }
-
     }
 
     override fun onDestroyView() {

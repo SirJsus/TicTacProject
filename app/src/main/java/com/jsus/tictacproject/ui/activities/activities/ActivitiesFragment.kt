@@ -13,7 +13,7 @@ import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.databinding.FragmentActivitiesBinding
 
-class ActivitiesFragment : Fragment(), newActivityAdd {
+class ActivitiesFragment : Fragment(), NewActivityAdd {
 
     private var _binding: FragmentActivitiesBinding? = null
     private val binding get() = _binding!!

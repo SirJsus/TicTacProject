@@ -2,6 +2,6 @@ package com.jsus.tictacproject.ui.activities.activities
 
 import com.jsus.tictacproject.code.objects.Activity
 
-interface newActivityAdd {
+interface NewActivityAdd {
     fun addActivity(activity: Activity)
 }

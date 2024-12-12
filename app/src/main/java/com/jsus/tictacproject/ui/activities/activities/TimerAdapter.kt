@@ -45,21 +45,22 @@ class TimerAdapter(
                     Log.d("tictac_TimerAdapter", "render, newPosition: $position")
 
                     if (isChecked) {
+                        val now = LocalDateTime.now()
                         // Detener el cronómetro activo, si hay uno
                         activeTimerPosition?.let { prevPosition ->
                             if (prevPosition != position) {
                                 val prevTimerItem = items[prevPosition]
-                                stopTimer(prevTimerItem)
+                                activity.stopTimer(prevTimerItem, now, db)
                                 notifyItemChanged(prevPosition) // Actualizar la UI del cronómetro anterior
                             }
                         }
                         // Iniciar el nuevo cronómetro
                         activeTimerPosition = position
                         Log.d("tictac_TimerAdapter", "render, new activeTimerPosition: $activeTimerPosition")
-                        startTimer(activity)
+                        activity.startTime(activity, now, db)
                     } else {
                         // Detener el cronómetro actual
-                        stopTimer(activity)
+                        activity.stopTimer(activity, now, db)
                         if (activeTimerPosition == position) activeTimerPosition = null
                     }
                 }

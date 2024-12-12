@@ -19,12 +19,14 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         private const val id_ac = "activity_id"
         private const val name_ac = "name_ac"
         private const val desc_ac = "description_ac"
+        private const val arch_ac = "archived_ac"
 
         private const val CREATE_ACTIVITY_TABLE =
             "CREATE TABLE $TABLE_NAME_ACTIVITY (" +
                     "$id_ac INTEGER NOT NULL," +
                     "$name_ac TEXT NOT NULL," +
                     "$desc_ac TEXT," +
+                    "$arch_ac INTEGER NOT NULL," +
                     "PRIMARY KEY ($id_ac)" +
                     ");"
 
@@ -65,6 +67,9 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(id_ac, data.id)
             put(name_ac, data.name)
             put(desc_ac, data.description)
+            val arch = if (data.archived) 1
+                        else 0
+            put(arch_ac, arch)
         }
         val result = insertOnTable(TABLE_NAME_ACTIVITY, null, values)
         Log.d("tictac_DBHelper", "insertActivity: $data\n$result")
@@ -75,7 +80,9 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             val id    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
             val name    = cursor.getString (cursor.getColumnIndex(name_ac).toInt())
             val desc    = cursor.getString (cursor.getColumnIndex(desc_ac).toInt())
-            Activity(id, name, desc)
+            val arch    = cursor.getInt (cursor.getColumnIndex(desc_ac).toInt())
+            val getArch = (arch == 1)
+            Activity(id, name, desc, getArch)
         } else Activity()
         cursor.close()
         return data

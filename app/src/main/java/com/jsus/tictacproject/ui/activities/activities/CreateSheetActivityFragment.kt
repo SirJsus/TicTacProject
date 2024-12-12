@@ -11,7 +11,8 @@ import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.TextConfig
 import com.jsus.tictacproject.databinding.SheetCreateActivityBinding
 
-class CreateSheetActivityFragment(private val listener: newActivityAdd):BottomSheetDialogFragment() {
+class CreateSheetActivityFragment(private val listener: NewActivityAdd
+):BottomSheetDialogFragment() {
 
     private var _binding: SheetCreateActivityBinding? = null
     private val binding get() = _binding!!

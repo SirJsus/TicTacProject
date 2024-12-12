@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jsus.tictacproject.code.db.DBHelper
+import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), ActivityChange {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -27,7 +30,29 @@ class HomeFragment : Fragment() {
             textView.text = it
         }
 
+        set()
+
         return root
+    }
+
+    fun set(){
+        val dbHelper = DBHelper(requireContext())
+        val now = dbHelper.getNow()
+        val list = if (now != Activity()) mutableListOf(now)
+                    else emptyList()
+        recyclerViewNow(list, dbHelper)
+    }
+
+    private fun recyclerViewNow(list: List<Activity>, dbHelper: DBHelper){
+        val adapter = TimerOnAdapter(list, dbHelper, this)
+        with(binding){
+            timerOnRv.layoutManager = LinearLayoutManager(requireContext())
+            timerOnRv.adapter = adapter
+        }
+    }
+
+    override fun activityHasChange() {
+        set()
     }
 
     override fun onDestroyView() {

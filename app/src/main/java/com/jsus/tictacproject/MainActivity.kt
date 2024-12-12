@@ -1,13 +1,17 @@
 package com.jsus.tictacproject
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.jsus.tictacproject.code.objects.TextFormat
 import com.jsus.tictacproject.databinding.ActivityMainBinding
+import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,5 +35,13 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val handler = Handler(Looper.getMainLooper())
+        handler.post(object : Runnable {
+            override fun run() {
+                binding.textClock.text = TextFormat.getLocalTime(LocalDateTime.now())
+                handler.postDelayed(this, 55)
+            }
+        })
     }
 }
