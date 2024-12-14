@@ -385,7 +385,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_REGISTER")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_NOW")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_TASK")
-        db?.execSQL("DROP TABLE IF EXISTS $CREATE_TSK_ACT_TABLE")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME_TSK_ACT")
         onCreate(db)
     }
 }

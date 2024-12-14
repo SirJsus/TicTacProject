@@ -44,10 +44,14 @@ class TaskFragment: Fragment(), NewTaskAdd {
     }
 
     fun set(){
+        db()
+        recyclerViewTask()
+    }
+
+    fun db(){
         dbHelper = DBHelper(requireContext())
         activityList = Activity().getList(dbHelper)
         taskList = Task().getList(dbHelper)
-        recyclerViewTask()
     }
 
     private fun recyclerViewTask(){
@@ -60,6 +64,7 @@ class TaskFragment: Fragment(), NewTaskAdd {
 
     fun buttonOperation(){
         binding.addButton.setOnClickListener {
+            db()
             val createSheetTask = CreateSheetTaskFragment(this, activityList, dbHelper)
             createSheetTask.show(parentFragmentManager, "createTask")
         }

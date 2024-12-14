@@ -23,7 +23,7 @@ class ActivityPagerAdapter(private val context: Context, fm: FragmentManager): F
         }
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return context.resources.getString(TAB_TITTLE[position])
     }
 
