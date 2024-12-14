@@ -20,7 +20,6 @@ class TaskAdapter(
         fun render(task: Task){
             //
             with(binding){
-                textId.text = task.id.toString()
                 textName.text = task.name
                 textDesc.text = task.desc
             }
