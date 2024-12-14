@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.logs
+package com.jsus.tictacproject.ui.logs.graph
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,14 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.jsus.tictacproject.databinding.FragmentLogsBinding
+import com.jsus.tictacproject.databinding.FragmentLogGraphBinding
 
-class LogsFragment : Fragment() {
+class GraphFragment: Fragment() {
 
-    private var _binding: FragmentLogsBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentLogGraphBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,14 +19,13 @@ class LogsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
-            ViewModelProvider(this)[LogsViewModel::class.java]
+        val notificationViewModel = ViewModelProvider(this)[GraphViewModel::class.java]
 
-        _binding = FragmentLogsBinding.inflate(inflater, container, false)
+        _binding = FragmentLogGraphBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textNotifications
-        notificationsViewModel.text.observe(viewLifecycleOwner) {
+        notificationViewModel.text.observe(viewLifecycleOwner){
             textView.text = it
         }
         return root

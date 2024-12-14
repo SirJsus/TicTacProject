@@ -11,4 +11,10 @@
     <string name="error_name">Error Name</string>
     <string name="error_desc">Error Description</string>
 
+    <string name="logs_logs">Logs</string>
+    <string name="logs_graph">Graph</string>
+
+    <string name="activity_activity">Activity</string>
+    <string name="activity_task">Task</string>
+
 </resources>

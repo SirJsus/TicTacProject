@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.logs
+package com.jsus.tictacproject.ui.logs.logs
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

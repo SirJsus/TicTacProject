@@ -1,4 +1,4 @@
-package com.jsus.tictacproject.ui.home
+package com.jsus.tictacproject.ui.logs.logs
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.objects.Register
 import com.jsus.tictacproject.code.objects.TextFormat
 import com.jsus.tictacproject.databinding.ItemRegisterTimerBinding
+import java.time.Duration
 
 class RegisterAdapter(private val items: List<Register>
 ): RecyclerView.Adapter<RegisterAdapter.RegisterHolder>() {
@@ -17,17 +18,17 @@ class RegisterAdapter(private val items: List<Register>
         fun render (register: Register){
             with(binding){
                 textName.text = register.activity.name
-                textIdActivity.text = register.activity.id.toString()
-                textIdRegister.text = register.id.toString()
+                val between = Duration.between(register.start, register.end).toMillis()
+                textDuration.text = TextFormat.getTime(between)
                 val startTime = TextFormat.getLocalTime(register.start)
                 textStart.text = startTime
                 val endTime = TextFormat.getLocalTime(register.end)
                 textEnd.text = endTime
 
                 with(register){
-                    val dateStart = "${start.dayOfMonth}-${start.month}-${start.year}"
-                    val dateEnd = "${end.dayOfMonth}-${end.month}-${end.year}"
-                    textDate.text = if (dateEnd == dateStart) dateStart
+                    val dateStart = start.toLocalDate()
+                    val dateEnd = end.toLocalDate()
+                    textDate.text = if (dateEnd == dateStart) dateStart.toString()
                                     else "$dateStart - $dateEnd"
                 }
             }

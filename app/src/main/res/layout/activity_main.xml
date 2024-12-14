@@ -8,12 +8,23 @@
     android:orientation="vertical"
     >
 
+    <TextView
+        android:id="@+id/text_clock"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="00:00:00"
+        android:textStyle="bold"
+        android:autoSizeTextType="uniform"
+        />
+
     <fragment
         android:id="@+id/nav_host_fragment_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="9"
         app:defaultNavHost="true"
         app:navGraph="@navigation/mobile_navigation"
         />
