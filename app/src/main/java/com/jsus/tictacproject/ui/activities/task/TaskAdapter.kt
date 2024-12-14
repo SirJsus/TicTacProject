@@ -1,8 +1,11 @@
 package com.jsus.tictacproject.ui.activities.task
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.objects.Task
@@ -12,7 +15,8 @@ class TaskAdapter(
     private val items: List<Task>
 ): RecyclerView.Adapter<TaskAdapter.TaskViewModel>() {
     inner class TaskViewModel(view: View): RecyclerView.ViewHolder(view){
-        private val binding = ItemTaskBinding.bind(view)
+        val binding = ItemTaskBinding.bind(view)
+        val timerRv = binding.timerTaskRv
         fun render(task: Task){
             //
             with(binding){
@@ -29,9 +33,14 @@ class TaskAdapter(
         return TaskViewModel(view)
     }
 
-    override fun getItemCount(): Int =items.size
+    override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: TaskViewModel, position: Int) {
-        holder.render(items[position])
+        val item = items[position]
+        holder.binding.timerTaskRv.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = ActivityTaskAdapter(item.listActivity)
+        }
+        holder.render(item)
     }
 }

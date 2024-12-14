@@ -14,8 +14,11 @@ import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.FragmentTaskBinding
 import com.jsus.tictacproject.ui.home.TimerOnAdapter
 
-class TaskFragment: Fragment(), NewTaskAdd {
+private lateinit var activityList: MutableList<Activity>
+private lateinit var taskList: MutableList<Task>
+private lateinit var dbHelper: DBHelper
 
+class TaskFragment: Fragment(), NewTaskAdd {
     private var _binding: FragmentTaskBinding? = null
     private val binding get() = _binding!!
 
@@ -41,13 +44,14 @@ class TaskFragment: Fragment(), NewTaskAdd {
     }
 
     fun set(){
-        val dbHelper = DBHelper(requireContext())
-        val itemList = dbHelper.getTaskList()
-        recyclerViewTask(itemList, dbHelper)
+        dbHelper = DBHelper(requireContext())
+        activityList = Activity().getList(dbHelper)
+        taskList = Task().getList(dbHelper)
+        recyclerViewTask()
     }
 
-    private fun recyclerViewTask(list: List<Task>, dbHelper: DBHelper){
-        val adapter = TaskAdapter(list)
+    private fun recyclerViewTask(){
+        val adapter = TaskAdapter(taskList)
         with(binding){
             taskRv.layoutManager = LinearLayoutManager(requireContext())
             taskRv.adapter = adapter
@@ -56,7 +60,7 @@ class TaskFragment: Fragment(), NewTaskAdd {
 
     fun buttonOperation(){
         binding.addButton.setOnClickListener {
-            val createSheetTask = CreateSheetTaskFragment(this)
+            val createSheetTask = CreateSheetTaskFragment(this, activityList, dbHelper)
             createSheetTask.show(parentFragmentManager, "createTask")
         }
     }

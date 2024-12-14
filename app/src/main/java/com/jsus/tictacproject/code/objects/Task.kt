@@ -6,18 +6,19 @@ import kotlin.random.Random
 class Task(var id: Int,
            var name: String,
            var desc: String?,
+           var listActivity: List<Activity> = emptyList(),
            var arch: Boolean = false,
-           var listActivity: List<Activity> = emptyList()) {
-    constructor(): this (0, "", null, true)
+) {
+    constructor(): this (0, "", null)
 
-    fun create(name: String, desc: String?, db: DBHelper): Task{
+    fun create(name: String, desc: String?, db: DBHelper, list: List<Activity> = emptyList()): Task{
         var newID: Int
         do {
             newID = Random.nextInt()
             val isFree = db.getTaskByID(newID)
         } while (isFree != Task())
 
-        val newTask = Task(newID, name, desc)
+        val newTask = Task(newID, name, desc, list)
         db.insertTask(newTask)
         return newTask
     }

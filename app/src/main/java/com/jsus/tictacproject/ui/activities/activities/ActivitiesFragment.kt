@@ -61,7 +61,7 @@ class ActivitiesFragment : Fragment(), NewActivityAdd, ActivityChange {
             val now = db.getNow()
             Log.d("tictac_ActivitiesFragment", "recyclerViewTimers, now: $now")
             if (now != Activity()) itemList.find { it.id == now.id }!!.timer.start = now.timer.start
-            timerRv.layoutManager = GridLayoutManager(requireContext(), 5)
+            timerRv.layoutManager = GridLayoutManager(requireContext(), 2)
             timerRv.adapter = adapter
         }
     }

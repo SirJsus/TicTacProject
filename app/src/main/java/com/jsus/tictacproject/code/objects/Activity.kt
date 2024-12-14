@@ -69,6 +69,8 @@ class Activity(var id: Int,
     }
 
     override fun toString(): String {
-        return "\nActivity ($id, $name, $description, $archived, $timer)"
+        return "\nActivity ($id, $name, $description, $archived, " +
+                "${timer.start?.let { TextFormat.getLocalTime(it) }}, " +
+                "${timer.end?.let { TextFormat.getLocalTime(it) }}, ${timer.isRunning})"
     }
 }
