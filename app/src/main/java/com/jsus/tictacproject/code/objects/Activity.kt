@@ -41,7 +41,7 @@ class Activity(var id: Int,
         if (activity.timer.isRunning){
             activity.timer.end(now)
             val newReg = Register().create(activity, db)
-            db.deleteNowActivity(1, newReg.activity)
+            db.deleteNow(1)
             Log.d("tictac_Activity", "stopTimer, activity: $activity")
             activity.timer.reset()
         }
@@ -52,9 +52,13 @@ class Activity(var id: Int,
         if (getNow != Activity()){
             getNow.timer.end(now)
             val newReg = Register().create(getNow, db)
-            db.deleteNowActivity(1, newReg.activity)
+            db.deleteNow(1)
             Log.d("tictac_Activity", "stopAnyTimer, Now: $getNow")
         }
+    }
+
+    fun getNow(db: DBHelper): Activity{
+        return db.getNowActivity()
     }
 
     override fun equals(other: Any?): Boolean {

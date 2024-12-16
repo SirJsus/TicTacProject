@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
 import com.jsus.tictacproject.ui.home.ActivityChange
 import java.time.LocalDateTime
@@ -60,6 +61,7 @@ class TimerAdapter(
                         activity.stopTimer(activity, now, db)
                         if (activeTimerPosition == position) activeTimerPosition = null
                     }
+                    Task().stop(db)
                     listener.activityHasChange()
                 }
             }

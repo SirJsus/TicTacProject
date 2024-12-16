@@ -10,32 +10,27 @@ import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.ItemTaskBinding
+import com.jsus.tictacproject.ui.home.ActivityChange
 import java.time.LocalDateTime
 import kotlin.coroutines.coroutineContext
 
 class TaskAdapter(
     private val items: List<Task>,
-    dbHelper: DBHelper
-): RecyclerView.Adapter<TaskAdapter.TaskViewModel>() {
-    val db = dbHelper
+    private val db: DBHelper,
+    private val listener: ActivityChange
+): RecyclerView.Adapter<TaskAdapter.TaskViewModel>(), ActivityChange {
     private var currentPosition = -1 // Posición actual para activar el toggle
 
     inner class TaskViewModel(view: View): RecyclerView.ViewHolder(view){
         val binding = ItemTaskBinding.bind(view)
-        fun render(task: Task){
+        fun render(task: Task, position: Int, adapter: ActivityTaskAdapter){
             //
             with(binding){
                 textName.text = task.name
                 textDesc.text = task.desc
 
-                timerTaskRv.layoutManager = LinearLayoutManager(binding.root.context)
-                val adapter = ActivityTaskAdapter(task.listActivity, db, false){ newPosition ->
-                    currentPosition = newPosition
-                    Log.d("tictac_TaskAdapter", "playButton, ActivityTaskAdapter: $newPosition")
-                }
-                timerTaskRv.adapter = adapter
-
                 playButton.setOnClickListener {
+                    if (position != 0) currentPosition = -1
                     Log.d("tictac_TaskAdapter", "playButton, click ----------------------")
                     Log.d("tictac_TaskAdapter", "playButton, currentPosition: $currentPosition")
                     Log.d("tictac_TaskAdapter", "playButton, adapter.itemCount: ${adapter.itemCount - 1}")
@@ -46,9 +41,15 @@ class TaskAdapter(
                         currentPosition = 0
                     }
                     adapter.setToggleState(currentPosition)
+                    updateThing()
                 }
             }
         }
+    }
+
+    fun updateThing(){
+        listener.activityHasChange()
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewModel {
@@ -60,6 +61,23 @@ class TaskAdapter(
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: TaskViewModel, position: Int) {
-        holder.render(items[position])
+        val item = items[position]
+
+        val adapter = ActivityTaskAdapter(item, db, position, this){ newPosition ->
+            currentPosition = newPosition
+            Log.d("tictac_TaskAdapter", "playButton, ActivityTaskAdapter: $newPosition")
+        }
+        holder.binding.timerTaskRv.layoutManager = LinearLayoutManager(holder.binding.root.context)
+        holder.binding.timerTaskRv.adapter = adapter
+
+
+        if (item == Task()){
+            holder.itemView.visibility = View.GONE
+            holder.itemView.layoutParams = RecyclerView.LayoutParams(0,0)
+        } else holder.render(item, position, adapter)
+    }
+
+    override fun activityHasChange() {
+        updateThing()
     }
 }

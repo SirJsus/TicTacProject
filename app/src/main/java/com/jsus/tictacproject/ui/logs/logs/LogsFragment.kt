@@ -43,7 +43,7 @@ class LogsFragment : Fragment() {
         val dbHelper = DBHelper(requireContext())
         val listRegister = dbHelper.getRegisterList().asReversed()
         recyclerViewRegister(listRegister)
-        val now = dbHelper.getNowActivity()
+        val now = Activity().getNow(dbHelper)
         val list = if (now != Activity()) mutableListOf(now)
                     else emptyList()
         recyclerViewNow(list)
