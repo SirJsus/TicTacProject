@@ -9,16 +9,16 @@ import com.jsus.tictacproject.ui.activities.activities.ActivitiesFragment
 import com.jsus.tictacproject.ui.activities.task.TaskFragment
 
 private val TAB_TITTLE = arrayOf(
-    R.string.activity_task,
-    R.string.activity_activity
+    R.string.activity_activity,
+    R.string.activity_task
 )
 
 class ActivityPagerAdapter(private val context: Context, fm: FragmentManager): FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return when (position){
-            0 -> TaskFragment()
-            1 -> ActivitiesFragment()
+            0 -> ActivitiesFragment()
+            1 -> TaskFragment()
             else -> throw IllegalArgumentException ("Invalid Position $position")
         }
     }

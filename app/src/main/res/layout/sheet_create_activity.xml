@@ -19,7 +19,7 @@
         android:layout_margin="8dp"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="Create Activity"
+        android:text="Crear Actividad"
         />
 
     <LinearLayout
@@ -55,8 +55,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="save"
-            android:contentDescription="save"
+            android:text="Guardar"
+            android:contentDescription="Guardar"
             style="?android:attr/buttonBarButtonStyle"
             />
 
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:autofillHints="no"
-            android:hint="Descripcion"
+            android:hint="Descripcion (Opcional)"
             android:inputType="text"
             />
     </com.google.android.material.textfield.TextInputLayout>

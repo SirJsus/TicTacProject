@@ -13,16 +13,17 @@
         android:title="@string/title_activities"
         />
 
+    <!--Cambiar por el container despues-->
     <item
-        android:id="@+id/navigation_logs_container"
+        android:id="@+id/navigation_logs"
         android:icon="@drawable/ic_registration"
         android:title="@string/title_logs"
         />
 
-    <item
+    <!--item
         android:id="@+id/navigation_config"
         android:icon="@drawable/ic_settings"
         android:title="@string/title_config"
-        />
+        />-->
 
 </menu>
