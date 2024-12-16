@@ -15,8 +15,7 @@ import com.jsus.tictacproject.databinding.SheetCreateTaskBinding
 
 class CreateSheetTaskFragment(
     private val listener: NewTaskAdd,
-    private val activityList: List<Activity>,
-    private val db: DBHelper
+    private val activityList: List<Activity>
 ): BottomSheetDialogFragment() {
 
     private var _binding: SheetCreateTaskBinding? = null
@@ -58,7 +57,7 @@ class CreateSheetTaskFragment(
     }
 
     private fun recyclerViewTimers(){
-        val adapter = TimerToTaskAdapter(activityList, db, list){ activity, add ->
+        val adapter = TimerToTaskAdapter(activityList, list){ activity, add ->
             if (add) list.add(activity)
             else {
                 val isHere = list.find { it.id == activity.id }

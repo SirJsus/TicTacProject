@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.ToggleButton
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
-import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
 
 class TimerToTaskAdapter(
     private val items: List<Activity>,
-    private val db: DBHelper,
     private val selectedList: List<Activity>,
     private val activitySelected: (Activity, add: Boolean) -> Unit
 ): RecyclerView.Adapter<TimerToTaskAdapter.TimerToTaskViewHolder>() {
@@ -22,7 +20,7 @@ class TimerToTaskAdapter(
         private val binding = ItemToggleTimerBinding.bind(view)
         val toggleButton: ToggleButton = binding.toggleButtonItem
 
-        fun render (activity: Activity, position: Int){
+        fun render (activity: Activity){
             with(binding){
                 Log.d("tictac_TimerToTaskAdapter", "render, activity: $activity")
                 val index = selectedList.indexOf(activity)
@@ -50,7 +48,7 @@ class TimerToTaskAdapter(
     override fun onBindViewHolder(holder: TimerToTaskViewHolder, position: Int) {
         holder.toggleButton.setOnCheckedChangeListener(null)
         holder.toggleButton.text = items[position].name
-        holder.render(items[position], position)
+        holder.render(items[position])
     }
 
     override fun getItemCount(): Int = items.size

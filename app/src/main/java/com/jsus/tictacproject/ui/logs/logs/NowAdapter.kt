@@ -29,7 +29,7 @@ class NowAdapter(private val items: List<Activity>
                 textDate.text = if (dateEnd == dateStart) dateStart.toString()
                                 else "$dateStart - $dateEnd"
             }
-            startTimer(this, activity, binding)
+            startTimer(activity, binding)
         }
     }
 
@@ -45,7 +45,7 @@ class NowAdapter(private val items: List<Activity>
         holder.render(items[position])
     }
 
-    private fun startTimer(holder: NowHolder, activity: Activity, binding: ItemRegisterTimerBinding) {
+    private fun startTimer(activity: Activity, binding: ItemRegisterTimerBinding) {
         handler.post(object : Runnable {
             override fun run() {
                 if (activity.timer.isRunning) {

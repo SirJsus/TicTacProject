@@ -95,10 +95,10 @@ class TaskFragment: Fragment(), NewTaskAdd, ActivityChange {
         }
     }
 
-    fun buttonOperation(){
+    private fun buttonOperation(){
         binding.addButton.setOnClickListener {
             db()
-            val createSheetTask = CreateSheetTaskFragment(this, activityList, dbHelper)
+            val createSheetTask = CreateSheetTaskFragment(this, activityList)
             createSheetTask.show(parentFragmentManager, "createTask")
         }
     }
