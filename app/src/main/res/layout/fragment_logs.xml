@@ -18,10 +18,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/now_rv"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
             tools:listitem="@layout/item_register_timer"
             />
+
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/register_rv"

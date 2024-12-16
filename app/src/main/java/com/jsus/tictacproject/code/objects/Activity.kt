@@ -47,6 +47,10 @@ class Activity(var id: Int,
         }
     }
 
+    fun archived(activity: Activity, db: DBHelper) {
+        db.archivedActivity(activity)
+    }
+
     fun stopAnyTimer(now: LocalDateTime, db: DBHelper){
         val getNow = db.getNowActivity()
         if (getNow != Activity()){

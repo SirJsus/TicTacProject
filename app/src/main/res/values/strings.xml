@@ -2,19 +2,19 @@
     <string name="app_name">TicTacProject</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_activities">Activities</string>
+    <string name="title_activities">Actividades</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_logs">Logs</string>
+    <string name="title_logs">Registros</string>
     <string name="title_config">Configuration</string>
 
     <string name="error">Error</string>
-    <string name="error_name">Error Name</string>
-    <string name="error_desc">Error Description</string>
+    <string name="error_name">Error en el Nombre</string>
+    <string name="error_desc">Error en la Descripcion</string>
 
     <string name="logs_logs">Logs</string>
     <string name="logs_graph">Graph</string>
 
-    <string name="activity_activity">Activity</string>
-    <string name="activity_task">Task</string>
+    <string name="activity_activity">Actividades</string>
+    <string name="activity_task">Tareas</string>
 
 </resources>

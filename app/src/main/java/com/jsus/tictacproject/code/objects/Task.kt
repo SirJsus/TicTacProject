@@ -37,6 +37,10 @@ class Task(var id: Int,
         db.deleteNow(2)
     }
 
+    fun archived(task: Task, db: DBHelper) {
+        db.archivedTask(task)
+    }
+
     fun getNow(db: DBHelper): Task{
         return db.getNowTask()
     }

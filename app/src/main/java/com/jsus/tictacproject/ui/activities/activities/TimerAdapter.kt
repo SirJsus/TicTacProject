@@ -64,6 +64,16 @@ class TimerAdapter(
                     Task().stop(db)
                     listener.activityHasChange()
                 }
+
+                toggleButton.setOnLongClickListener {
+                    if (activity.timer.isRunning){
+                        now = LocalDateTime.now()
+                        activity.stopTimer(activity, now, db)
+                    }
+                    activity.archived(activity, db)
+                    listener.activityHasChange()
+                    true
+                }
             }
         }
     }

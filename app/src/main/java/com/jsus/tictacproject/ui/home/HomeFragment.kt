@@ -46,7 +46,7 @@ class HomeFragment : Fragment(), ActivityChange {
         recyclerViewNow(list, nowTask, dbHelper)
 
         val taskList = mutableListOf<Task>()
-        if (now != Activity())
+        if (now != Activity() && nowTask != Task())
             nowTask.listActivity.find { now.id == it.id }!!.timer.start = now.timer.start
         taskList.add(0, nowTask)
 
