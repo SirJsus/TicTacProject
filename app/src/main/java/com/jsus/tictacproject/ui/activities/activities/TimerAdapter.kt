@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.ItemToggleTimerBinding
 import com.jsus.tictacproject.ui.home.ActivityChange
 import java.time.LocalDateTime
@@ -30,12 +31,10 @@ class TimerAdapter(
             with(binding){
                 Log.d("tictac_TimerAdapter", "render, activity: $activity")
                 toggleButtonItem.isChecked = if (activity.timer.isRunning){
-                    activeTimerPosition = position
-                    true
-                } else false
+                                                    activeTimerPosition = position
+                                                    true
+                                                } else false
                 toggleButtonItem.text = activity.name
-                toggleButtonItem.textOn = activity.name
-                toggleButtonItem.textOff = activity.name
 
                 toggleButtonItem.setOnCheckedChangeListener { _, isChecked ->
                     Log.d("tictac_TimerAdapter", "render, reset ============================")
@@ -43,8 +42,8 @@ class TimerAdapter(
                     Log.d("tictac_TimerAdapter", "render, prevPosition: $activeTimerPosition")
                     Log.d("tictac_TimerAdapter", "render, newPosition: $position")
 
+                    now = LocalDateTime.now()
                     if (isChecked) {
-                        val now = LocalDateTime.now()
                         // Detener el cronómetro activo, si hay uno
                         activeTimerPosition?.let { prevPosition ->
                             if (prevPosition != position) {
@@ -62,6 +61,7 @@ class TimerAdapter(
                         activity.stopTimer(activity, now, db)
                         if (activeTimerPosition == position) activeTimerPosition = null
                     }
+                    Task().stop(db)
                     listener.activityHasChange()
                 }
             }

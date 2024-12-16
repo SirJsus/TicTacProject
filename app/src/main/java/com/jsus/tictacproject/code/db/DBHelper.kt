@@ -217,7 +217,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return dataList
     }
 
-    fun insertNow(data: Activity) {
+    fun insertNowActivity(data: Activity) {
         val values = ContentValues()
         with(values){
             put(id_now, 1)
@@ -225,10 +225,21 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(start_now, data.timer.start!!.toString())
         }
         val result = insertOnTable(TABLE_NAME_NOW, null, values)
-        Log.d("tictac_DBHelper", "insertNow: $result")
+        Log.d("tictac_DBHelper", "insertNowActivity: $result")
     }
 
-    fun updateNow(data: Activity){
+    fun insertNowTask(data: Task) {
+        val values = ContentValues()
+        with(values){
+            put(id_now, 2)
+            put(id_ac, data.id)
+            put(start_now, data.name)
+        }
+        val result = insertOnTable(TABLE_NAME_NOW, null, values)
+        Log.d("tictac_DBHelper", "insertNowTask: $result")
+    }
+
+    fun updateNowActivity(data: Activity){
         val values = ContentValues()
         with(values){
             put(id_now, 1)
@@ -236,19 +247,30 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(start_now, data.timer.start!!.toString())
         }
         val result = updateOnTable(TABLE_NAME_NOW, values, "$id_now = ?", arrayOf("1"))
-        Log.d("tictac_DBHelper", "updateNow: $result")
+        Log.d("tictac_DBHelper", "updateNowActivity: $result")
     }
 
-    fun deleteNow(id: Int, activity: Activity) {
-        Log.d("tictac_DBHelper", "deleteNow, id: $id,\nactivity $activity")
+    fun updateNowTask(data: Task){
+        val values = ContentValues()
+        with(values){
+            put(id_now, 2)
+            put(id_ac, data.id)
+            put(start_now, data.name)
+        }
+        val result = updateOnTable(TABLE_NAME_NOW, values, "$id_now = ?", arrayOf("1"))
+        Log.d("tictac_DBHelper", "updateNowActivity: $result")
+    }
+
+    fun deleteNow(id: Int) {
+        Log.d("tictac_DBHelper", "deleteNowActivity, id: $id")
         val whereClause = "$id_now = ?"
         val whereArgs = arrayOf("$id")
         deleteOnTable(TABLE_NAME_NOW, whereClause, whereArgs)
     }
 
-    fun getNow(): Activity{
+    fun getNowActivity(): Activity{
         val query = "SELECT * FROM $TABLE_NAME_NOW WHERE $id_now = 1"
-        Log.d("tictac_DBHelper", "getNow query: $query")
+        Log.d("tictac_DBHelper", "getNowActivity query: $query")
         val cursor = readableDatabase.rawQuery(query, null)
 
         val data: Activity = if (cursor.moveToFirst()){
@@ -262,7 +284,22 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             now
         } else Activity()
         cursor.close()
-        Log.d("tictac_DBHelper", "getNow result: $data")
+        Log.d("tictac_DBHelper", "getNowActivity result: $data")
+        return data
+    }
+
+    fun getNowTask(): Task{
+        val query = "SELECT * FROM $TABLE_NAME_NOW WHERE $id_now = 2"
+        Log.d("tictac_DBHelper", "getNowTask query: $query")
+        val cursor = readableDatabase.rawQuery(query, null)
+
+        val data: Task = if (cursor.moveToFirst()){
+            val id_ac    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
+            val task = getTaskByID(id_ac)
+            task
+        } else Task()
+        cursor.close()
+        Log.d("tictac_DBHelper", "getNowTask result: $data")
         return data
     }
 

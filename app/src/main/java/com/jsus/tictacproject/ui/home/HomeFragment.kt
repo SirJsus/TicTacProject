@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
+import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment(), ActivityChange {
@@ -37,14 +38,15 @@ class HomeFragment : Fragment(), ActivityChange {
 
     fun set(){
         val dbHelper = DBHelper(requireContext())
-        val now = dbHelper.getNow()
+        val now = Activity().getNow(dbHelper)
         val list = if (now != Activity()) mutableListOf(now)
                     else emptyList()
-        recyclerViewNow(list, dbHelper)
+        val nowTask = Task().getNow(dbHelper)
+        recyclerViewNow(list, nowTask, dbHelper)
     }
 
-    private fun recyclerViewNow(list: List<Activity>, dbHelper: DBHelper){
-        val adapter = TimerOnAdapter(list, dbHelper, this)
+    private fun recyclerViewNow(list: List<Activity>, task: Task, dbHelper: DBHelper){
+        val adapter = TimerOnAdapter(list, task, dbHelper, this)
         with(binding){
             timerOnRv.layoutManager = LinearLayoutManager(requireContext())
             timerOnRv.adapter = adapter

@@ -20,8 +20,6 @@
         android:ellipsize="end"
 
         android:drawableStart="@drawable/ic_alarms"
-        android:background="@drawable/toggle_button_border"
-        android:textColor="@drawable/toggle_button_text_color"
         android:padding="8dp"
         />
 

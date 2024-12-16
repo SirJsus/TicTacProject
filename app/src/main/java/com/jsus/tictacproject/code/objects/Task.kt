@@ -1,5 +1,6 @@
 package com.jsus.tictacproject.code.objects
 
+import android.util.Log
 import com.jsus.tictacproject.code.db.DBHelper
 import kotlin.random.Random
 
@@ -25,6 +26,19 @@ class Task(var id: Int,
 
     fun getList(db: DBHelper): MutableList<Task>{
         return db.getTaskList()
+    }
+
+    fun start(task: Task, db: DBHelper){
+        db.insertNowTask(task)
+        Log.d("tictac_Task", "setTaskNow, Task: $task")
+    }
+
+    fun stop(db: DBHelper){
+        db.deleteNow(2)
+    }
+
+    fun getNow(db: DBHelper): Task{
+        return db.getNowTask()
     }
 
     override fun equals(other: Any?): Boolean {
