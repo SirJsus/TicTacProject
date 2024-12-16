@@ -37,7 +37,7 @@ class HomeFragment : Fragment(), ActivityChange {
 
     fun set(){
         val dbHelper = DBHelper(requireContext())
-        val now = dbHelper.getNow()
+        val now = dbHelper.getNowActivity()
         val list = if (now != Activity()) mutableListOf(now)
                     else emptyList()
         recyclerViewNow(list, dbHelper)

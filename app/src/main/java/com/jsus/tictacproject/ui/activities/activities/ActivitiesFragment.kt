@@ -48,7 +48,7 @@ class ActivitiesFragment : Fragment(), NewActivityAdd, ActivityChange {
         val dbHelper = DBHelper(requireContext())
         val itemList = Activity().getList(dbHelper)
         recyclerViewTimers(itemList, dbHelper)
-        val now = dbHelper.getNow()
+        val now = dbHelper.getNowActivity()
         val list = if (now != Activity()) mutableListOf(now)
                     else emptyList()
         recyclerViewNow(list, dbHelper)
@@ -58,7 +58,7 @@ class ActivitiesFragment : Fragment(), NewActivityAdd, ActivityChange {
         val adapter = TimerAdapter(itemList, db, this)
         with(binding){
             Log.d("tictac_ActivitiesFragment", "recyclerViewTimers, itemList: $itemList")
-            val now = db.getNow()
+            val now = db.getNowActivity()
             Log.d("tictac_ActivitiesFragment", "recyclerViewTimers, now: $now")
             if (now != Activity()) itemList.find { it.id == now.id }!!.timer.start = now.timer.start
             timerRv.layoutManager = GridLayoutManager(requireContext(), 2)

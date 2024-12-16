@@ -217,7 +217,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         return dataList
     }
 
-    fun insertNow(data: Activity) {
+    fun insertNowActivity(data: Activity) {
         val values = ContentValues()
         with(values){
             put(id_now, 1)
@@ -239,14 +239,14 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         Log.d("tictac_DBHelper", "updateNow: $result")
     }
 
-    fun deleteNow(id: Int, activity: Activity) {
+    fun deleteNowActivity(id: Int, activity: Activity) {
         Log.d("tictac_DBHelper", "deleteNow, id: $id,\nactivity $activity")
         val whereClause = "$id_now = ?"
         val whereArgs = arrayOf("$id")
         deleteOnTable(TABLE_NAME_NOW, whereClause, whereArgs)
     }
 
-    fun getNow(): Activity{
+    fun getNowActivity(): Activity{
         val query = "SELECT * FROM $TABLE_NAME_NOW WHERE $id_now = 1"
         Log.d("tictac_DBHelper", "getNow query: $query")
         val cursor = readableDatabase.rawQuery(query, null)

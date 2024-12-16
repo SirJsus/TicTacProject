@@ -30,12 +30,10 @@ class TimerAdapter(
             with(binding){
                 Log.d("tictac_TimerAdapter", "render, activity: $activity")
                 toggleButtonItem.isChecked = if (activity.timer.isRunning){
-                    activeTimerPosition = position
-                    true
-                } else false
+                                                    activeTimerPosition = position
+                                                    true
+                                                } else false
                 toggleButtonItem.text = activity.name
-                toggleButtonItem.textOn = activity.name
-                toggleButtonItem.textOff = activity.name
 
                 toggleButtonItem.setOnCheckedChangeListener { _, isChecked ->
                     Log.d("tictac_TimerAdapter", "render, reset ============================")
@@ -43,8 +41,8 @@ class TimerAdapter(
                     Log.d("tictac_TimerAdapter", "render, prevPosition: $activeTimerPosition")
                     Log.d("tictac_TimerAdapter", "render, newPosition: $position")
 
+                    now = LocalDateTime.now()
                     if (isChecked) {
-                        val now = LocalDateTime.now()
                         // Detener el cronómetro activo, si hay uno
                         activeTimerPosition?.let { prevPosition ->
                             if (prevPosition != position) {

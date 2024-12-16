@@ -33,17 +33,27 @@ class Activity(var id: Int,
     fun startTime(activity: Activity, now: LocalDateTime, db: DBHelper){
         //
         activity.timer.start(now)
-        Log.d("tictac_TimerAdapter", "startTimer, activity: $activity")
-        db.insertNow(activity)
+        Log.d("tictac_Activity", "startTimer, activity: $activity")
+        db.insertNowActivity(activity)
     }
 
     fun stopTimer(activity: Activity, now: LocalDateTime, db: DBHelper) {
         if (activity.timer.isRunning){
             activity.timer.end(now)
             val newReg = Register().create(activity, db)
-            db.deleteNow(1, newReg.activity)
-            Log.d("tictac_TimerAdapter", "stopTimer, activity: $activity")
+            db.deleteNowActivity(1, newReg.activity)
+            Log.d("tictac_Activity", "stopTimer, activity: $activity")
             activity.timer.reset()
+        }
+    }
+
+    fun stopAnyTimer(now: LocalDateTime, db: DBHelper){
+        val getNow = db.getNowActivity()
+        if (getNow != Activity()){
+            getNow.timer.end(now)
+            val newReg = Register().create(getNow, db)
+            db.deleteNowActivity(1, newReg.activity)
+            Log.d("tictac_Activity", "stopAnyTimer, Now: $getNow")
         }
     }
 

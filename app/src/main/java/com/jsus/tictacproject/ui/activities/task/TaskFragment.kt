@@ -55,7 +55,7 @@ class TaskFragment: Fragment(), NewTaskAdd {
     }
 
     private fun recyclerViewTask(){
-        val adapter = TaskAdapter(taskList)
+        val adapter = TaskAdapter(taskList, dbHelper)
         with(binding){
             taskRv.layoutManager = LinearLayoutManager(requireContext())
             taskRv.adapter = adapter
