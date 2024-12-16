@@ -130,7 +130,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     }
 
     fun getActivityByID(id: Int): Activity{
-        val query = "SELECT * FROM $TABLE_NAME_ACTIVITY WHERE $id_ac = $id"
+        val query = "SELECT * FROM $TABLE_NAME_ACTIVITY WHERE $id_ac = $id AND $arch_ac = 0"
         Log.d("tictac_DBHelper", "getActivityByID query: $query")
         val cursor = readableDatabase.rawQuery(query, null)
         val result = getActivity(cursor)
@@ -139,20 +139,38 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     }
 
     fun getActivityList(): MutableList<Activity>{
-        val columns = arrayOf(id_ac, name_ac, desc_ac)
+
+        val select = "$arch_ac = ?"
+        val arg = arrayOf("0")
+        val columns = arrayOf(id_ac, name_ac, desc_ac, arch_ac)
+
         val cursor = readableDatabase.query(
             TABLE_NAME_ACTIVITY, columns,
-            null, null, null, null, null)
+            select, arg, null, null, null)
         val dataList = mutableListOf<Activity>()
         while (cursor.moveToNext()){
             val id    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
             val name    = cursor.getString (cursor.getColumnIndex(name_ac).toInt())
             val desc    = cursor.getString (cursor.getColumnIndex(desc_ac).toInt())
-            dataList.add(Activity(id, name, desc))
+            val arch    = cursor.getInt (cursor.getColumnIndex(arch_ac).toInt())
+            val getArch = (arch == 1)
+            dataList.add(Activity(id, name, desc, getArch))
         }
         cursor.close()
         Log.d("tictac_DBHelper", "getActivityList dataList: $dataList")
         return dataList
+    }
+
+    fun archivedActivity (data: Activity){
+        val values = ContentValues()
+        with(values){
+            put(id_ac, data.id)
+            put(name_ac, data.name)
+            put(desc_ac, data.description)
+            put(arch_ac, 1)
+        }
+        val result = updateOnTable(TABLE_NAME_ACTIVITY, values, "$id_ac = ?", arrayOf("${data.id}"))
+        Log.d("tictac_DBHelper", "archivedActivity: $result")
     }
 
     fun insertRegister(data: Register) {
@@ -257,7 +275,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             put(id_ac, data.id)
             put(start_now, data.name)
         }
-        val result = updateOnTable(TABLE_NAME_NOW, values, "$id_now = ?", arrayOf("1"))
+        val result = updateOnTable(TABLE_NAME_NOW, values, "$id_now = ?", arrayOf("2"))
         Log.d("tictac_DBHelper", "updateNowActivity: $result")
     }
 
@@ -318,6 +336,18 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
         Log.d("tictac_DBHelper", "insertTask: $data\n$result")
     }
 
+    fun archivedTask (data: Task){
+        val values = ContentValues()
+        with(values){
+            put(id_task, data.id)
+            put(name_task, data.name)
+            put(desc_task, data.desc)
+            put(arch_task, 1)
+        }
+        val result = updateOnTable(TABLE_NAME_TASK, values, "$id_task = ?", arrayOf("${data.id}"))
+        Log.d("tictac_DBHelper", "archivedTask: $result")
+    }
+
     private fun getTask(cursor: Cursor): Task {
         val data: Task = if (cursor.moveToFirst()){
             val id    = cursor.getInt (cursor.getColumnIndex(id_task).toInt())
@@ -333,10 +363,14 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
     }
 
     fun getTaskList(): MutableList<Task>{
+
         val columns = arrayOf(id_task, name_task, desc_task, arch_task)
+        val select = "$arch_task = ?"
+        val arg = arrayOf("0")
+
         val cursor = readableDatabase.query(
             TABLE_NAME_TASK, columns,
-            null, null, null, null, null)
+            select, arg, null, null, null)
         val dataList = mutableListOf<Task>()
         while (cursor.moveToNext()){
             val id    = cursor.getInt (cursor.getColumnIndex(id_task).toInt())
@@ -389,7 +423,7 @@ class DBHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null,
             val id_ac    = cursor.getInt (cursor.getColumnIndex(id_ac).toInt())
             Log.d("tictac_DBHelper", "getTskActList position: $position")
             val getActivity = getActivityByID(id_ac)
-            dataList.add(getActivity)
+            if (getActivity != Activity()) dataList.add(getActivity)
         }
         cursor.close()
         Log.d("tictac_DBHelper", "getTskActList dataList: $dataList")

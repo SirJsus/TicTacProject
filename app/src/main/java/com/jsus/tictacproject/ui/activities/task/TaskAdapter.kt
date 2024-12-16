@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jsus.tictacproject.R
 import com.jsus.tictacproject.code.db.DBHelper
+import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.ItemTaskBinding
 import com.jsus.tictacproject.ui.home.ActivityChange
@@ -42,6 +43,16 @@ class TaskAdapter(
                     }
                     adapter.setToggleState(currentPosition)
                     updateThing()
+                }
+
+                playButton.setOnLongClickListener {
+                    val now = LocalDateTime.now()
+                    val getNow = Activity().getNow(db)
+                    if (getNow != Activity()) Activity().stopTimer(getNow, now, db)
+                    Task().stop(db)
+                    Task().archived(task, db)
+                    updateThing()
+                    true
                 }
             }
         }
