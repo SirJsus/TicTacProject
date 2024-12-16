@@ -12,6 +12,7 @@ import com.jsus.tictacproject.code.db.DBHelper
 import com.jsus.tictacproject.code.objects.Activity
 import com.jsus.tictacproject.code.objects.Task
 import com.jsus.tictacproject.databinding.FragmentHomeBinding
+import com.jsus.tictacproject.ui.activities.task.TaskAdapter
 
 class HomeFragment : Fragment(), ActivityChange {
 
@@ -43,6 +44,13 @@ class HomeFragment : Fragment(), ActivityChange {
                     else emptyList()
         val nowTask = Task().getNow(dbHelper)
         recyclerViewNow(list, nowTask, dbHelper)
+
+        val taskList = mutableListOf<Task>()
+        if (now != Activity())
+            nowTask.listActivity.find { now.id == it.id }!!.timer.start = now.timer.start
+        taskList.add(0, nowTask)
+
+        recyclerViewTaskNow(taskList, dbHelper)
     }
 
     private fun recyclerViewNow(list: List<Activity>, task: Task, dbHelper: DBHelper){
@@ -50,6 +58,14 @@ class HomeFragment : Fragment(), ActivityChange {
         with(binding){
             timerOnRv.layoutManager = LinearLayoutManager(requireContext())
             timerOnRv.adapter = adapter
+        }
+    }
+
+    private fun recyclerViewTaskNow(taskList: List<Task>, dbHelper: DBHelper){
+        val adapter = TaskAdapter(taskList, dbHelper, this)
+        with(binding){
+            taskRv.layoutManager = LinearLayoutManager(requireContext())
+            taskRv.adapter = adapter
         }
     }
 
